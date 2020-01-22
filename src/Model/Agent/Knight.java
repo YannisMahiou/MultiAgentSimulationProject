@@ -6,10 +6,9 @@ public class Knight extends MeleeAgent{
         super(hp, damageReduction, speed, strength, 1);
     }
 
-    public void move() {   // pas besoin de redef (dans Model.Agent)
+    public void move() {
 
     }
-
 
     public void attack() {
 

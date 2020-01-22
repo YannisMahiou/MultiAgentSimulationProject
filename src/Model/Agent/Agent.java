@@ -11,11 +11,11 @@ public abstract class Agent implements IAgent{
     private int posY;
 
     public Agent(int hp, int damageReduction, int speed, int strength, int range) {
-        this.hp = hp;
-        this.damageReduction = damageReduction;
-        this.speed = speed;
-        this.strength = strength;
-        this.range = range;
+        setHp(hp);
+        setDamageReduction(damageReduction);
+        setSpeed(speed);
+        setStrength(strength);
+        setRange(range);
     }
 
     // Methods from the interface IAgent
@@ -23,43 +23,42 @@ public abstract class Agent implements IAgent{
     public abstract void attack();
     public abstract String toString();
 
-    public int getHp() {
+    private int getHp() {
         return hp;
     }
 
-    public void setHp(int hp) {
+    private void setHp(int hp) {
         this.hp = hp;
     }
 
-    public int getDamageReduction() {
+    public final int getDamageReduction() {
         return damageReduction;
     }
-
-    public void setDamageReduction(int damageReduction) {
+    public final void setDamageReduction(int damageReduction) {
         this.damageReduction = damageReduction;
     }
 
-    public int getSpeed() {
+    public final int getSpeed() {
         return speed;
     }
 
-    public void setSpeed(int speed) {
+    public final void setSpeed(int speed) {
         this.speed = speed;
     }
 
-    public int getStrength() {
+    public final  int getStrength() {
         return strength;
     }
 
-    public void setStrength(int strength) {
+    public final  void setStrength(int strength) {
         this.strength = strength;
     }
 
-    public int getRange() {
+    public final int getRange() {
         return range;
     }
 
-    public void setRange(int range) {
+    public final void setRange(int range) {
         this.range = range;
     }
 

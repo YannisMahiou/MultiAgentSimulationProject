@@ -27,16 +27,12 @@ public class Game {
             Random generator = new Random();
             int type = 0;
 
-            // Terrain is being Created
-            System.out.println("Terrain is getting built...");
-            terrain.createTerrain();
-
             // Creation of the Agent Factory
             AgentFactory factory = new AgentFactory();
 
             // Agent Creation loop
             for(int i = 0; i < 20; ++i){
-                type = generator.nextInt() % AgentType.values().length;
+                type = generator.nextInt(AgentType.values().length);
 
                 // Switch the type of Agent
                 switch(type) {
@@ -57,7 +53,7 @@ public class Game {
                         break;
                 }
             }
-            terrain.placeAgents(agentsTeam1);
+            terrain.placeAgents(agentsTeam1, 0);
             terrain.showTerrain();
         }
         catch(Exception e){
