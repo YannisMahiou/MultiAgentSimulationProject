@@ -62,7 +62,7 @@ public abstract class AbstractTerrain {
      * @param posY posY to check
      * @return true if free, false else
      */
-    private boolean isFree(int posX, int posY){
+    public boolean isFree(int posX, int posY){
         boolean res = false;
         if(agents[posX][posY] == null)
             res =  true;

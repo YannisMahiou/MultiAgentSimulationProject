@@ -1,7 +1,11 @@
 package Model.Agent;
 
+import Model.Terrain.AbstractTerrain;
+
+import java.util.List;
+
 public interface IAgent {
-    void move();
-    void attack();
+    public abstract void move(AbstractTerrain terrain, List<Agent> enemyTeam);
+    public abstract FightStatus attack(Agent enemy);
     String toString();
 }
