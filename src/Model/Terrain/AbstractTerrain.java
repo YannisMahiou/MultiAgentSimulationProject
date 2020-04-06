@@ -15,7 +15,6 @@ public abstract class AbstractTerrain {
 
     public IAgent[][] agents = new IAgent[NBAGENTS][NBAGENTS];
 
-
     public int getSizeX() {
         return sizeX;
     }
@@ -80,14 +79,17 @@ public abstract class AbstractTerrain {
         Random generator = new Random();
         int r1;
         int r2;
-        int nbAgents = 20;
 
         // For all the agents of the team
-        for(int i = 0; i < nbAgents; ++i){
+        for(int i = 0; i < NBAGENTS; ++i){
 
             //Generates 2 random numbers
             r1 = generator.nextInt(SIZEY);
             r2 = generator.nextInt(NBAGENTS);
+
+            if(side == 1){
+                r1 =  NBAGENTS - generator.nextInt(SIZEY) - side;
+            }
 
             // If the place on the Terrain is free
             if(isFree(r1, r2)){

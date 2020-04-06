@@ -3,8 +3,8 @@ package Model.Agent;
 public class Lancer extends MeleeAgent {
 
 
-    public Lancer(int hp, int damageReduction, int speed, int strength) {
-        super(hp, damageReduction, speed, strength, 1);
+    public Lancer(int hp, int damageReduction, int speed, int strength, String color) {
+        super(hp, damageReduction, speed, strength, 1, color);
     }
 
     @Override
@@ -54,6 +54,6 @@ public class Lancer extends MeleeAgent {
 
     @Override
     public String toString(){
-        return "I";
+        return this.getColor() + "I" + "\u001B[0m";
     }
 }

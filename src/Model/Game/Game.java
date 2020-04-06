@@ -10,6 +10,9 @@ import java.util.Random;
 
 public class Game {
 
+    private static final String ANSI_RED = "\u001B[31m";
+    private static final String ANSI_BLUE = "\u001B[34m";
+
     /**
      * Main function called when launching the MultiAgentSimulation
      * @param args arguments used when calling main function
@@ -37,23 +40,44 @@ public class Game {
                 // Switch the type of Agent
                 switch(type) {
                     case 0 :
-                        agentsTeam1.add(factory.create(AgentType.AXEMAN));
+                        agentsTeam1.add(factory.create(AgentType.AXEMAN, ANSI_RED));
                         break;
                     case 1 :
-                        agentsTeam1.add(factory.create(AgentType.BOWMAN));
+                        agentsTeam1.add(factory.create(AgentType.BOWMAN, ANSI_RED));
                         break;
                     case 2 :
-                        agentsTeam1.add(factory.create(AgentType.KNIGHT));
+                        agentsTeam1.add(factory.create(AgentType.KNIGHT, ANSI_RED));
                         break;
                     case 3 :
-                        agentsTeam1.add(factory.create(AgentType.LANCER));
-                        break;
-                    default :
-                        agentsTeam1.add(factory.create(AgentType.AXEMAN));
+                        agentsTeam1.add(factory.create(AgentType.LANCER, ANSI_RED));
                         break;
                 }
             }
+
+            // Agent Creation loop
+            for(int i = 0; i < 20; ++i){
+                type = generator.nextInt(AgentType.values().length);
+
+                // Switch the type of Agent
+                switch(type) {
+                    case 0 :
+                        agentsTeam2.add(factory.create(AgentType.AXEMAN, ANSI_BLUE));
+                        break;
+                    case 1 :
+                        agentsTeam2.add(factory.create(AgentType.BOWMAN, ANSI_BLUE));
+                        break;
+                    case 2 :
+                        agentsTeam2.add(factory.create(AgentType.KNIGHT, ANSI_BLUE));
+                        break;
+                    case 3 :
+                        agentsTeam2.add(factory.create(AgentType.LANCER, ANSI_BLUE));
+                        break;
+                }
+            }
+
+            // We place the teams on the board
             terrain.placeAgents(agentsTeam1, 0);
+            terrain.placeAgents(agentsTeam2, 1);
             terrain.showTerrain();
         }
         catch(Exception e){

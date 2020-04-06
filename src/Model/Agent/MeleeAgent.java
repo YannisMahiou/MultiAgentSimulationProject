@@ -10,8 +10,8 @@ import java.util.Random;
  */
 public abstract class MeleeAgent extends Agent{
 
-    public MeleeAgent(int hp, int damageReduction, int speed, int strength, int range) {
-        super(hp, damageReduction, speed, strength, range);
+    public MeleeAgent(int hp, int damageReduction, int speed, int strength, int range, String color) {
+        super(hp, damageReduction, speed, strength, range, color);
     }
 
     public void move(AbstractTerrain terrain, List<Agent> enemyTeam){
@@ -71,4 +71,5 @@ public abstract class MeleeAgent extends Agent{
             return Direction.BOT;
         }
     }
+
 }

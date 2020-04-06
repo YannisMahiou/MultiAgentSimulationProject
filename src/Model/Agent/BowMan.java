@@ -2,8 +2,8 @@ package Model.Agent;
 
 public class BowMan extends RangedAgent{
 
-    public BowMan(int hp, int damageReduction, int speed, int strength) {
-        super(hp, damageReduction, speed, strength, 2);
+    public BowMan(int hp, int damageReduction, int speed, int strength, String color) {
+        super(hp, damageReduction, speed, strength, 2, color);
     }
 
     @Override
@@ -43,6 +43,7 @@ public class BowMan extends RangedAgent{
 
     @Override
     public String toString(){
-        return "D";
+        return this.getColor() + "D" + "\u001B[0m";
     }
+
 }

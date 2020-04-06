@@ -2,9 +2,12 @@ package Model.Agent;
 
 import Model.Terrain.AbstractTerrain;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 
-public abstract class Agent implements IAgent {
+public abstract class Agent implements IAgent{
 
     private static int MIN_DAMAGE = 1;
     protected static double ADVANTAGE = 1.2;
@@ -17,39 +20,24 @@ public abstract class Agent implements IAgent {
     private int range;
     private int posX;
     private int posY;
+    private String color;
 
-    public Agent(int hp, int damageReduction, int speed, int strength, int range) {
+    public Agent(int hp, int damageReduction, int speed, int strength, int range, String color) {
         setHp(hp);
         setDamageReduction(damageReduction);
         setSpeed(speed);
         setStrength(strength);
         setRange(range);
-    }
-
-    public int getPosX() {
-        return posX;
-    }
-
-    public void setPosX(int posX) {
-        this.posX = posX;
-    }
-
-    public int getPosY() {
-        return posY;
-    }
-
-    public void setPosY(int posY) {
-        this.posY = posY;
+        setColor(color);
     }
 
     // Methods from the interface IAgent
     public abstract void move(AbstractTerrain terrain, List<Agent> enemyTeam);
-
     public abstract FightStatus attack(Agent enemy);
-
     public abstract String toString();
 
-    private int getHp() {
+
+    public final int getHp() {
         return hp;
     }
 
@@ -73,11 +61,11 @@ public abstract class Agent implements IAgent {
         this.speed = speed;
     }
 
-    public final int getStrength() {
+    public final  int getStrength() {
         return strength;
     }
 
-    public final void setStrength(int strength) {
+    public final  void setStrength(int strength) {
         this.strength = strength;
     }
 
@@ -88,6 +76,18 @@ public abstract class Agent implements IAgent {
     public final void setRange(int range) {
         this.range = range;
     }
+
+    public final String getColor() { return color; }
+
+    public final void setColor(String color) { this.color = color; }
+
+    public final int getPosX() { return posX; }
+
+    public final void setPosX(int posX) { this.posX = posX; }
+
+    public int getPosY() { return posY; }
+
+    public void setPosY(int posY) { this.posY = posY; }
 
     protected List<Agent> findClosestEnemies(List<Agent> enemyTeam) {
         Hashtable<Agent, Integer> closest = new Hashtable<>();
@@ -100,8 +100,8 @@ public abstract class Agent implements IAgent {
             closest.put(enemy, distance);
         }
 
-        List<Map.Entry<Agent, Integer>> entires = new ArrayList(closest.entrySet());
-        entires.sort(Map.Entry.comparingByValue());
+        List<Map.Entry<Agent, Integer>> entries = new ArrayList(closest.entrySet());
+        entries.sort(Map.Entry.comparingByValue());
 
         /*
         ArrayList<Map.Entry<Agent, Integer>> l = new ArrayList(closest.entrySet());
@@ -113,14 +113,14 @@ public abstract class Agent implements IAgent {
         });
         */
 
-        entires.forEach(entry -> {
+        entries.forEach(entry -> {
             if (list.size() < 5) {
                 list.add(entry.getKey());
             }
         });
 
         return list;
-   }
+    }
 
     protected boolean moveTo(AbstractTerrain terrain, int posX, int posY){
         if(terrain.isFree(posX, posY)){
@@ -137,4 +137,6 @@ public abstract class Agent implements IAgent {
     public boolean isAlive(){
         return hp > 0;
     }
+
+
 }

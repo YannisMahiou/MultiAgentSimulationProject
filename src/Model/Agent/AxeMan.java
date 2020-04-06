@@ -2,8 +2,8 @@ package Model.Agent;
 
 public class AxeMan extends MeleeAgent {
 
-    public AxeMan(int hp, int damageReduction, int speed, int strength) {
-        super(hp, damageReduction, speed, strength, 1);
+    public AxeMan(int hp, int damageReduction, int speed, int strength, String color) {
+        super(hp, damageReduction, speed, strength, 1, color);
     }
 
     @Override
@@ -53,6 +53,6 @@ public class AxeMan extends MeleeAgent {
 
     @Override
     public String toString(){
-       return "H";
+        return this.getColor() + "H" + "\u001B[0m";
     }
 }

@@ -2,8 +2,8 @@ package Model.Agent;
 
 public class Knight extends MeleeAgent{
 
-    public Knight(int hp, int damageReduction, int speed, int strength) {
-        super(hp, damageReduction, speed, strength, 1);
+    public Knight(int hp, int damageReduction, int speed, int strength, String color) {
+        super(hp, damageReduction, speed, strength, 1, color);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class Knight extends MeleeAgent{
 
     @Override
     public String toString(){
-        return "T";
+        return this.getColor() + "T" + "\u001B[0m";
     }
 
 }

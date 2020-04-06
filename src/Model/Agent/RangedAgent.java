@@ -7,8 +7,8 @@ import java.util.Random;
 
 public abstract class RangedAgent extends Agent{
 
-    public RangedAgent(int hp, int damageReduction, int speed, int strength, int range) {
-        super(hp, damageReduction, speed, strength, range);
+    public RangedAgent(int hp, int damageReduction, int speed, int strength, int range, String color) {
+        super(hp, damageReduction, speed, strength, range, color);
     }
 
     @Override
@@ -111,4 +111,5 @@ public abstract class RangedAgent extends Agent{
             }
         }
     }
+
 }
