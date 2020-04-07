@@ -87,17 +87,17 @@ public abstract class Agent{
     public void setPosY(int posY) { this.posY = posY; }
 
     protected List<Agent> findClosestEnemies(LinkedList<Agent> enemyTeam) {
-        Hashtable<Agent, Integer> closest = new Hashtable<>();
+        Hashtable<Agent, Double> closest = new Hashtable<>();
         ArrayList<Agent> list = new ArrayList<>();
-        int distance;
+        double distance;
 
         for (Agent enemy : enemyTeam) {
-            distance = Math.abs(this.posX - enemy.posX) + Math.abs(this.posY - enemy.posY);
+            distance = Math.sqrt((this.getPosX() - enemy.getPosX()) * (this.getPosX() - enemy.getPosX()) + (this.getPosY() - enemy.getPosY()) * (this.getPosY() - enemy.getPosY()));
 
             closest.put(enemy, distance);
         }
 
-        List<Map.Entry<Agent, Integer>> entries = new ArrayList(closest.entrySet());
+        List<Map.Entry<Agent, Double>> entries = new ArrayList(closest.entrySet());
         entries.sort(Map.Entry.comparingByValue());
 
         /*
@@ -120,11 +120,12 @@ public abstract class Agent{
     }
 
     protected boolean moveTo(AbstractTerrain terrain, int posX, int posY){
-        if(terrain.moveToSamePlace(this, posX, posY))
+        if(terrain.moveToSamePlace(this, posX, posY)) {
             return true;
+        }
 
         if(terrain.isFree(posX, posY)){
-            terrain.updateAgentCoordinates(terrain.agents[this.posX][this.posY], posX, posY);
+            terrain.updateAgentCoordinates(this, posX, posY);
             return true;
         }
         return false;

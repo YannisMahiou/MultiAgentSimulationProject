@@ -46,7 +46,7 @@ public abstract class AbstractTerrain {
      */
     public void createTerrain() {
         for (int j = 0; j < NBAGENTS; ++j) {
-            for(int i = 0; i < NBAGENTS; ++i){
+            for (int i = 0; i < NBAGENTS; ++i) {
                 System.out.print("*");
             }
             System.out.print("\n");
@@ -60,10 +60,10 @@ public abstract class AbstractTerrain {
      * @param posY posY to check
      * @return true if free, false else
      */
-    public boolean isFree(int posX, int posY){
+    public boolean isFree(int posX, int posY) {
         boolean res = false;
-        if(agents[posX][posY] == null)
-            res =  true;
+        if (agents[posX][posY] == null)
+            res = true;
         return res;
     }
 
@@ -76,38 +76,41 @@ public abstract class AbstractTerrain {
 
         // Initialisation of variables
         Random generator = new Random();
-        int r1;
-        int r2;
+        int randX;
+        int randY;
 
         // For all the agents of the team
-        for(int i = 0; i < NBAGENTS; ++i){
+        for (Agent agent : team) {
 
-            //Generates 2 random numbers
-            r1 = generator.nextInt(SIZEY);
-            r2 = generator.nextInt(NBAGENTS);
+            do {
+                //Generates 2 random numbers
+                randX = generator.nextInt(SIZEY);
+                randY = generator.nextInt(NBAGENTS);
 
-            if(side == 1){
-                r1 =  NBAGENTS - generator.nextInt(SIZEY) - side;
-            }
+                if (side == 1) {
+                    randX = NBAGENTS - generator.nextInt(SIZEY) - side;
+                }
+            } while (!isFree(randX, randY));
+
 
             // If the place on the Terrain is free
-            if(isFree(r1, r2)){
 
-                // Place an Agent
-                agents[r1][r2] = team.get(i);
-            }
+            // Place an Agent
+            agents[randX][randY] = agent;
+            agent.setPosX(randX);
+            agent.setPosY(randY);
         }
     }
 
     /**
      * Function called to show the terrain with the agents
      */
-    public void showTerrain(){
+    public void showTerrain() {
         for (int x = 0; x < NBAGENTS; ++x) {
             for (int y = 0; y < NBAGENTS; ++y) {
                 if (isFree(x, y))
-                    System.out.print("*");
-                else System.out.print(agents[x][y].toString());
+                    System.out.print("* ");
+                else System.out.print(agents[x][y].toString() + " ");
             }
             System.out.print("\n");
         }
@@ -116,36 +119,35 @@ public abstract class AbstractTerrain {
     /**
      * Takes an agent and updates his coordinates
      */
-    public void updateAgentCoordinates(Agent agent, int posX, int posY)
-    {
+    public void updateAgentCoordinates(Agent agent, int posX, int posY) {
         agents[agent.getPosX()][agent.getPosY()] = null;
         agents[posX][posY] = agent;
     }
 
     /**
      * Checks if the posX and posY given aren't out of bounds from the Terrain
+     *
      * @param posX
      * @param posY
      * @return true if [posX
      */
-    public boolean isOutOfBounds(int posX, int posY)
-    {
+    public boolean isOutOfBounds(int posX, int posY) {
         boolean isOut = false;
-        if(posX < 0 || posY < 0 || posX > NBAGENTS || posY > NBAGENTS)
+        if (posX < 0 || posY < 0 || posX >= NBAGENTS || posY >= NBAGENTS)
             isOut = true;
         return isOut;
     }
 
     /**
      * Checks if the agent wants to move to the same [X][Y] coordinates
+     *
      * @param agent
      * @param posX
      * @param posY
      * @return
      */
-    public boolean moveToSamePlace(Agent agent, int posX, int posY)
-    {
-        if(agent.getPosX() == posX || agent.getPosY()  == posY) {
+    public boolean moveToSamePlace(Agent agent, int posX, int posY) {
+        if (agent.getPosX() == posX || agent.getPosY() == posY) {
             return true;
         }
         return false;

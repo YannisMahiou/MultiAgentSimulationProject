@@ -15,47 +15,47 @@ public abstract class RangedAgent extends Agent{
     @Override
     public void move(AbstractTerrain terrain, LinkedList<Agent> enemyTeam){
         List<Agent> closestEnemies = findClosestEnemies(enemyTeam);
-
-        Random r = new Random();
-        int newPosX = 0, newPosY = 0;
-        int rand = r.nextInt(closestEnemies.size() - 1);
-
-        Agent focused = closestEnemies.get(rand);
         boolean canAttack = false;
+        Agent focused;
+        Random r = new Random();
+        int newPosX = 0, newPosY = 0, rand;
 
         do{
+            rand = r.nextInt(closestEnemies.size() - 1);
+            focused = closestEnemies.get(rand);
+
             switch (getDirection(focused)){
                 case BOT:
-                    newPosX = focused.getPosX();
-                    newPosY = focused.getPosY() - 1;
+                    newPosX =  focused.getPosX() - 1;
+                    newPosY =  focused.getPosY();
                     break;
                 case TOP:
-                    newPosX = focused.getPosX();
-                    newPosY = focused.getPosY() + 1;
+                    newPosX =  focused.getPosX() + 1;
+                    newPosY =  focused.getPosY();
                     break;
                 case LEFT:
-                    newPosX = focused.getPosX() - 1;
-                    newPosY = focused.getPosY();
+                    newPosX =  focused.getPosX();
+                    newPosY =  focused.getPosY() - 1;
                     break;
                 case RIGHT:
-                    newPosX = focused.getPosX() + 1;
-                    newPosY = focused.getPosY();
+                    newPosX =  focused.getPosX();
+                    newPosY =  focused.getPosY() + 1;
                     break;
                 case TOP_LEFT:
-                    newPosX = focused.getPosX() -1;
-                    newPosY = focused.getPosY() + 1;
+                    newPosX = focused.getPosX() + 1;
+                    newPosY = focused.getPosY() - 1;
                     break;
                 case TOP_RIGHT:
                     newPosX = focused.getPosX() + 1;
                     newPosY = focused.getPosY() + 1;
                     break;
                 case BOTTOM_LEFT:
-                    newPosX = focused.getPosX() + 1;
+                    newPosX = focused.getPosX() - 1;
                     newPosY = focused.getPosY() - 1;
                     break;
                 case BOTTOM_RIGHT:
                     newPosX = focused.getPosX() - 1;
-                    newPosY = focused.getPosY() - 1;
+                    newPosY = focused.getPosY() + 1;
                     break;
             }
         }while(terrain.isOutOfBounds(newPosX, newPosY));

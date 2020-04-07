@@ -82,11 +82,11 @@ public class Game {
             terrain.showTerrain();
             System.out.println("\n");
 
-            for(int j = 0; j < 20; ++j)
+            for(int j = 0; j < agentsTeam1.size(); ++j)
             {
                 agentsTeam1.get(j).move(terrain, agentsTeam2);
-                System.out.println(j);
-                System.out.println("\n");
+                System.out.print(j);
+                System.out.print(" ");
             }
             terrain.showTerrain();
         }
