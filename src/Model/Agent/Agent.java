@@ -2,12 +2,9 @@ package Model.Agent;
 
 import Model.Terrain.AbstractTerrain;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public abstract class Agent implements IAgent{
+public abstract class Agent{
 
     private static int MIN_DAMAGE = 1;
     protected static double ADVANTAGE = 1.2;
@@ -32,7 +29,7 @@ public abstract class Agent implements IAgent{
     }
 
     // Methods from the interface IAgent
-    public abstract void move(AbstractTerrain terrain, List<Agent> enemyTeam);
+    public abstract void move(AbstractTerrain terrain, LinkedList<Agent> enemyTeam);
     public abstract FightStatus attack(Agent enemy);
     public abstract String toString();
 
@@ -89,7 +86,7 @@ public abstract class Agent implements IAgent{
 
     public void setPosY(int posY) { this.posY = posY; }
 
-    protected List<Agent> findClosestEnemies(List<Agent> enemyTeam) {
+    protected List<Agent> findClosestEnemies(LinkedList<Agent> enemyTeam) {
         Hashtable<Agent, Integer> closest = new Hashtable<>();
         ArrayList<Agent> list = new ArrayList<>();
         int distance;
@@ -123,8 +120,11 @@ public abstract class Agent implements IAgent{
     }
 
     protected boolean moveTo(AbstractTerrain terrain, int posX, int posY){
-        if(terrain.isFree(posX, posY)){
+        if(terrain.moveToSamePlace(this, posX, posY))
+            return true;
 
+        if(terrain.isFree(posX, posY)){
+            terrain.updateAgentCoordinates(terrain.agents[this.posX][this.posY], posX, posY);
             return true;
         }
         return false;

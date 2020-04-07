@@ -6,7 +6,7 @@ public class AgentFactory implements IFactory {
 
     public AgentFactory(){}
 
-    public IAgent create(AgentType type, String color) throws Exception{
+    public Agent create(AgentType type, String color) throws Exception{
         switch (type) {
             case BOWMAN:
                 return new BowMan(25, 5, 10, 16, color);
@@ -24,7 +24,7 @@ public class AgentFactory implements IFactory {
         }
     }
 
-    public IAgent createAgent(AgentType type, int hp, int damageReduction, int speed, int strength, String color) throws Exception{
+    public Agent createAgent(AgentType type, int hp, int damageReduction, int speed, int strength, String color) throws Exception{
         switch (type) {
             case BOWMAN:
                 return new BowMan(hp, damageReduction, speed, strength, color);

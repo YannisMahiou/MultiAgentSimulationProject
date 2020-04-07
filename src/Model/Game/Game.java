@@ -1,7 +1,7 @@
 package Model.Game;
 
+import Model.Agent.Agent;
 import Model.Agent.AgentType;
-import Model.Agent.IAgent;
 import Model.Factory.AgentFactory;
 import Model.Terrain.AbstractTerrain;
 import Model.Terrain.Terrain;
@@ -21,10 +21,11 @@ public class Game {
 
         // Try Loop used to catch Exception coming from lower levels
         try {
+
             // Initialisation of variables
             AbstractTerrain terrain = new Terrain(20, 20);
-            LinkedList<IAgent> agentsTeam1 = new LinkedList<>();
-            LinkedList<IAgent> agentsTeam2 = new LinkedList<>();
+            LinkedList<Agent> agentsTeam1 = new LinkedList<>();
+            LinkedList<Agent> agentsTeam2 = new LinkedList<>();
 
             // Random variates
             Random generator = new Random();
@@ -78,6 +79,15 @@ public class Game {
             // We place the teams on the board
             terrain.placeAgents(agentsTeam1, 0);
             terrain.placeAgents(agentsTeam2, 1);
+            terrain.showTerrain();
+            System.out.println("\n");
+
+            for(int j = 0; j < 20; ++j)
+            {
+                agentsTeam1.get(j).move(terrain, agentsTeam2);
+                System.out.println(j);
+                System.out.println("\n");
+            }
             terrain.showTerrain();
         }
         catch(Exception e){

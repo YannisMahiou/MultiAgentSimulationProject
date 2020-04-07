@@ -2,6 +2,7 @@ package Model.Agent;
 
 import Model.Terrain.AbstractTerrain;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -14,29 +15,38 @@ public abstract class MeleeAgent extends Agent{
         super(hp, damageReduction, speed, strength, range, color);
     }
 
-    public void move(AbstractTerrain terrain, List<Agent> enemyTeam){
+    public void move(AbstractTerrain terrain, LinkedList<Agent> enemyTeam){
         List<Agent> closestEnemies = findClosestEnemies(enemyTeam);
 
         Random r = new Random();
         int rand = r.nextInt(closestEnemies.size() - 1);
+        int newPosX = 0, newPosY = 0;
 
         Agent focused = closestEnemies.get(rand);
         boolean canAttack = false;
 
-        switch (getDirection(focused)){
-            case BOT:
-                canAttack = moveTo(terrain, focused.getPosX(), focused.getPosY() - 1);
-                break;
-            case TOP:
-                canAttack = moveTo(terrain, focused.getPosX(), focused.getPosY() + 1);
-                break;
-            case LEFT:
-                canAttack = moveTo(terrain, focused.getPosX() - 1, focused.getPosY());
-                break;
-            case RIGHT:
-                canAttack = moveTo(terrain, focused.getPosX() + 1, focused.getPosY());
-                break;
-        }
+        do{
+            switch (getDirection(focused)){
+                case BOT:
+                    newPosX =  focused.getPosX();
+                    newPosY =  focused.getPosY() - 1;
+                    break;
+                case TOP:
+                    newPosX =  focused.getPosX();
+                    newPosY =  focused.getPosY() + 1;
+                    break;
+                case LEFT:
+                    newPosX =  focused.getPosX() - 1;
+                    newPosY =  focused.getPosY();
+                    break;
+                case RIGHT:
+                    newPosX =  focused.getPosX() + 1;
+                    newPosY =  focused.getPosY();
+                    break;
+            }
+        }while(terrain.isOutOfBounds(newPosX, newPosY));
+
+        canAttack = moveTo(terrain, newPosX, newPosY);
 
         if(canAttack){
             switch (attack(focused)){
@@ -55,21 +65,18 @@ public abstract class MeleeAgent extends Agent{
 
     public abstract FightStatus attack(Agent enemy);
 
-    private Direction getDirection(Agent enemy){
-        if(this.getPosY() == enemy.getPosY()){
-            if(this.getPosX() > enemy.getPosX()){
+    private Direction getDirection(Agent enemy) {
+        if (this.getPosX() == enemy.getPosX()) {
+            if (this.getPosY() > enemy.getPosY()) {
                 return Direction.RIGHT;
-            }
-            else {
+            } else {
                 return Direction.LEFT;
             }
         }
-        if(this.getPosY() > enemy.getPosX()){
+        if (this.getPosX() > enemy.getPosX()) {
             return Direction.TOP;
-        }
-        else {
+        } else {
             return Direction.BOT;
         }
     }
-
 }

@@ -2,6 +2,7 @@ package Model.Agent;
 
 import Model.Terrain.AbstractTerrain;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -12,41 +13,54 @@ public abstract class RangedAgent extends Agent{
     }
 
     @Override
-    public void move(AbstractTerrain terrain, List<Agent> enemyTeam){
+    public void move(AbstractTerrain terrain, LinkedList<Agent> enemyTeam){
         List<Agent> closestEnemies = findClosestEnemies(enemyTeam);
 
         Random r = new Random();
+        int newPosX = 0, newPosY = 0;
         int rand = r.nextInt(closestEnemies.size() - 1);
 
         Agent focused = closestEnemies.get(rand);
         boolean canAttack = false;
 
-        switch (getDirection(focused)){
-            case BOT:
-                canAttack = moveTo(terrain, focused.getPosX(), focused.getPosY() - 1);
-                break;
-            case TOP:
-                canAttack = moveTo(terrain, focused.getPosX(), focused.getPosY() + 1);
-                break;
-            case LEFT:
-                canAttack = moveTo(terrain, focused.getPosX() - 1, focused.getPosY());
-                break;
-            case RIGHT:
-                canAttack = moveTo(terrain, focused.getPosX() + 1, focused.getPosY());
-                break;
-            case TOP_LEFT:
-                canAttack = moveTo(terrain, focused.getPosX() - 1, focused.getPosY() + 1);
-                break;
-            case TOP_RIGHT:
-                canAttack = moveTo(terrain, focused.getPosX() + 1, focused.getPosY() + 1);
-                break;
-            case BOTTOM_LEFT:
-                canAttack = moveTo(terrain, focused.getPosX() + 1, focused.getPosY() - 1);
-                break;
-            case BOTTOM_RIGHT:
-                canAttack = moveTo(terrain, focused.getPosX() - 1, focused.getPosY() - 1);
-                break;
-        }
+        do{
+            switch (getDirection(focused)){
+                case BOT:
+                    newPosX = focused.getPosX();
+                    newPosY = focused.getPosY() - 1;
+                    break;
+                case TOP:
+                    newPosX = focused.getPosX();
+                    newPosY = focused.getPosY() + 1;
+                    break;
+                case LEFT:
+                    newPosX = focused.getPosX() - 1;
+                    newPosY = focused.getPosY();
+                    break;
+                case RIGHT:
+                    newPosX = focused.getPosX() + 1;
+                    newPosY = focused.getPosY();
+                    break;
+                case TOP_LEFT:
+                    newPosX = focused.getPosX() -1;
+                    newPosY = focused.getPosY() + 1;
+                    break;
+                case TOP_RIGHT:
+                    newPosX = focused.getPosX() + 1;
+                    newPosY = focused.getPosY() + 1;
+                    break;
+                case BOTTOM_LEFT:
+                    newPosX = focused.getPosX() + 1;
+                    newPosY = focused.getPosY() - 1;
+                    break;
+                case BOTTOM_RIGHT:
+                    newPosX = focused.getPosX() - 1;
+                    newPosY = focused.getPosY() - 1;
+                    break;
+            }
+        }while(terrain.isOutOfBounds(newPosX, newPosY));
+
+        canAttack = moveTo(terrain, newPosX, newPosY);
 
         if(canAttack){
             switch (attack(focused)){
@@ -68,8 +82,8 @@ public abstract class RangedAgent extends Agent{
     private Direction getDirection(Agent enemy){
         Random r = new Random();
         int rand = r.nextInt(2);
-        if(this.getPosY() == enemy.getPosY()){
-            if(this.getPosX() > enemy.getPosX()){
+        if(this.getPosX() == enemy.getPosX()){
+            if(this.getPosY() > enemy.getPosY()){
                 switch (rand){
                     case 1:
                         return Direction.TOP_RIGHT;
@@ -90,7 +104,7 @@ public abstract class RangedAgent extends Agent{
                 }
             }
         }
-        if(this.getPosY() > enemy.getPosX()){
+        if(this.getPosX() > enemy.getPosX()){
             switch (rand){
                 case 1:
                     return Direction.TOP_LEFT;
@@ -111,5 +125,4 @@ public abstract class RangedAgent extends Agent{
             }
         }
     }
-
 }

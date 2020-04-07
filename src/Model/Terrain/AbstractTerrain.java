@@ -1,9 +1,8 @@
 package Model.Terrain;
 
-import Model.Agent.IAgent;
-import Model.Factory.AgentFactory;
+import Model.Agent.Agent;
 
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 public abstract class AbstractTerrain {
@@ -13,7 +12,7 @@ public abstract class AbstractTerrain {
     private int sizeX;
     private int sizeY;
 
-    public IAgent[][] agents = new IAgent[NBAGENTS][NBAGENTS];
+    public Agent[][] agents = new Agent[NBAGENTS][NBAGENTS];
 
     public int getSizeX() {
         return sizeX;
@@ -73,7 +72,7 @@ public abstract class AbstractTerrain {
      *
      * @param team Agents team created
      */
-    public void placeAgents(LinkedList<IAgent> team, int side) {
+    public void placeAgents(List<Agent> team, int side) {
 
         // Initialisation of variables
         Random generator = new Random();
@@ -112,5 +111,43 @@ public abstract class AbstractTerrain {
             }
             System.out.print("\n");
         }
+    }
+
+    /**
+     * Takes an agent and updates his coordinates
+     */
+    public void updateAgentCoordinates(Agent agent, int posX, int posY)
+    {
+        agents[agent.getPosX()][agent.getPosY()] = null;
+        agents[posX][posY] = agent;
+    }
+
+    /**
+     * Checks if the posX and posY given aren't out of bounds from the Terrain
+     * @param posX
+     * @param posY
+     * @return true if [posX
+     */
+    public boolean isOutOfBounds(int posX, int posY)
+    {
+        boolean isOut = false;
+        if(posX < 0 || posY < 0 || posX > NBAGENTS || posY > NBAGENTS)
+            isOut = true;
+        return isOut;
+    }
+
+    /**
+     * Checks if the agent wants to move to the same [X][Y] coordinates
+     * @param agent
+     * @param posX
+     * @param posY
+     * @return
+     */
+    public boolean moveToSamePlace(Agent agent, int posX, int posY)
+    {
+        if(agent.getPosX() == posX || agent.getPosY()  == posY) {
+            return true;
+        }
+        return false;
     }
 }
