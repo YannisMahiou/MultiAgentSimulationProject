@@ -13,38 +13,36 @@ public class Lancer extends MeleeAgent {
         int damage = this.getStrength() - enemy.getDamageReduction();
         int enemyCounterDamage = enemy.getStrength() - this.getDamageReduction();
 
-        if(enemy instanceof Knight){
+        if (enemy instanceof Knight) {
             damage *= ADVANTAGE;
             enemyCounterDamage *= DISADVANTAGE;
         }
-        if(enemy instanceof AxeMan){
+        if (enemy instanceof AxeMan) {
             damage *= DISADVANTAGE;
             enemyCounterDamage *= ADVANTAGE;
         }
 
         enemy.takeDamage(damage);
 
-        if (enemy.isAlive()){
+        if (enemy.isAlive()) {
             if (enemy instanceof MeleeAgent) {
                 this.takeDamage(enemyCounterDamage);
             }
-            if(!this.isAlive()){
+            if (!this.isAlive()) {
                 return FightStatus.LOST;
             }
-        }
-        else{
+        } else {
             return FightStatus.WIN;
         }
 
-        if(this.getSpeed() - enemy.getSpeed() > 5){
+        if (this.getSpeed() - enemy.getSpeed() > 5) {
             enemy.takeDamage(damage);
-            if(!enemy.isAlive()){
+            if (!enemy.isAlive()) {
                 return FightStatus.WIN;
             }
-        }
-        else if (enemy instanceof MeleeAgent && enemy.getSpeed() - this.getSpeed() > 5){
+        } else if (enemy instanceof MeleeAgent && enemy.getSpeed() - this.getSpeed() > 5) {
             this.takeDamage(enemyCounterDamage);
-            if(!this.isAlive()){
+            if (!this.isAlive()) {
                 return FightStatus.LOST;
             }
         }
@@ -53,7 +51,7 @@ public class Lancer extends MeleeAgent {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return this.getColor() + "I" + "\u001B[0m";
     }
 }

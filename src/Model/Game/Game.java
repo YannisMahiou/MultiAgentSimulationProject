@@ -5,6 +5,7 @@ import Model.Agent.AgentType;
 import Model.Factory.AgentFactory;
 import Model.Terrain.AbstractTerrain;
 import Model.Terrain.Terrain;
+
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -15,6 +16,7 @@ public class Game {
 
     /**
      * Main function called when launching the MultiAgentSimulation
+     *
      * @param args arguments used when calling main function
      */
     public static void main(String[] args) {
@@ -35,42 +37,42 @@ public class Game {
             AgentFactory factory = new AgentFactory();
 
             // Agent Creation loop
-            for(int i = 0; i < 20; ++i){
+            for (int i = 0; i < 20; ++i) {
                 type = generator.nextInt(AgentType.values().length);
 
                 // Switch the type of Agent
-                switch(type) {
-                    case 0 :
+                switch (type) {
+                    case 0:
                         agentsTeam1.add(factory.create(AgentType.AXEMAN, ANSI_RED));
                         break;
-                    case 1 :
+                    case 1:
                         agentsTeam1.add(factory.create(AgentType.BOWMAN, ANSI_RED));
                         break;
-                    case 2 :
+                    case 2:
                         agentsTeam1.add(factory.create(AgentType.KNIGHT, ANSI_RED));
                         break;
-                    case 3 :
+                    case 3:
                         agentsTeam1.add(factory.create(AgentType.LANCER, ANSI_RED));
                         break;
                 }
             }
 
             // Agent Creation loop
-            for(int i = 0; i < 20; ++i){
+            for (int i = 0; i < 20; ++i) {
                 type = generator.nextInt(AgentType.values().length);
 
                 // Switch the type of Agent
-                switch(type) {
-                    case 0 :
+                switch (type) {
+                    case 0:
                         agentsTeam2.add(factory.create(AgentType.AXEMAN, ANSI_BLUE));
                         break;
-                    case 1 :
+                    case 1:
                         agentsTeam2.add(factory.create(AgentType.BOWMAN, ANSI_BLUE));
                         break;
-                    case 2 :
+                    case 2:
                         agentsTeam2.add(factory.create(AgentType.KNIGHT, ANSI_BLUE));
                         break;
-                    case 3 :
+                    case 3:
                         agentsTeam2.add(factory.create(AgentType.LANCER, ANSI_BLUE));
                         break;
                 }
@@ -82,16 +84,15 @@ public class Game {
             terrain.showTerrain();
             System.out.println("\n");
 
-            for(int j = 0; j < agentsTeam1.size(); ++j)
-            {
-                agentsTeam1.get(j).move(terrain, agentsTeam2);
+            for (int j = 0; j < agentsTeam1.size(); ++j) {
+                agentsTeam1.get(j).actionTurn(terrain, agentsTeam2, agentsTeam1);
                 System.out.print(j);
                 System.out.print(" ");
             }
+            System.out.println();
             terrain.showTerrain();
-        }
-        catch(Exception e){
-            System.err.println("[Exception]") ;
+        } catch (Exception e) {
+            System.err.println("[Exception]");
             e.printStackTrace();
             System.err.println("End of Main method");
         }

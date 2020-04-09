@@ -9,10 +9,20 @@ public abstract class AbstractTerrain {
 
     private static int NBAGENTS = 20;
     private static int SIZEY = 5;
+    public Agent[][] agents = new Agent[NBAGENTS][NBAGENTS];
     private int sizeX;
     private int sizeY;
 
-    public Agent[][] agents = new Agent[NBAGENTS][NBAGENTS];
+    /**
+     * AbstractTerrain Constructor
+     *
+     * @param sizeX the x size of the AbstractTerrain
+     * @param sizeY the y size of the AbstractTerrain
+     */
+    AbstractTerrain(int sizeX, int sizeY) {
+        this.sizeX = sizeX;
+        this.sizeY = sizeY;
+    }
 
     public int getSizeX() {
         return sizeX;
@@ -27,17 +37,6 @@ public abstract class AbstractTerrain {
     }
 
     public void setIzeY(int sizeY) {
-        this.sizeY = sizeY;
-    }
-
-    /**
-     * AbstractTerrain Constructor
-     *
-     * @param sizeX the x size of the AbstractTerrain
-     * @param sizeY the y size of the AbstractTerrain
-     */
-    AbstractTerrain(int sizeX, int sizeY) {
-        this.sizeX = sizeX;
         this.sizeY = sizeY;
     }
 
@@ -82,18 +81,18 @@ public abstract class AbstractTerrain {
         // For all the agents of the team
         for (Agent agent : team) {
 
+            // Do While the place on the Terrain is not free
             do {
                 //Generates 2 random numbers
                 randX = generator.nextInt(SIZEY);
                 randY = generator.nextInt(NBAGENTS);
 
+                // Place the agent on the right side
                 if (side == 1) {
                     randX = NBAGENTS - generator.nextInt(SIZEY) - side;
                 }
             } while (!isFree(randX, randY));
 
-
-            // If the place on the Terrain is free
 
             // Place an Agent
             agents[randX][randY] = agent;
@@ -147,9 +146,10 @@ public abstract class AbstractTerrain {
      * @return
      */
     public boolean moveToSamePlace(Agent agent, int posX, int posY) {
-        if (agent.getPosX() == posX || agent.getPosY() == posY) {
-            return true;
-        }
-        return false;
+        return agent.getPosX() == posX || agent.getPosY() == posY;
+    }
+
+    public void removeAgent(Agent agent) {
+        agents[agent.getPosX()][agent.getPosY()] = null;
     }
 }

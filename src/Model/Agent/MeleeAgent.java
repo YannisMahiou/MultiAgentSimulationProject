@@ -15,67 +15,84 @@ public abstract class MeleeAgent extends Agent{
         super(hp, damageReduction, speed, strength, range, color);
     }
 
-    public void move(AbstractTerrain terrain, LinkedList<Agent> enemyTeam){
-        List<Agent> closestEnemies = findClosestEnemies(enemyTeam);
-        boolean canAttack = false;
-        Agent focused;
+    public abstract FightStatus attack(Agent enemy);
+
+    @Override
+    protected Direction getDirection(Agent enemy) {
         Random r = new Random();
-        int newPosX = 0, newPosY = 0, rand;
-
-        do{
-            rand = r.nextInt(closestEnemies.size() - 1);
-            focused = closestEnemies.get(rand);
-            switch (getDirection(focused)){
-                case BOT:
-                    newPosX =  focused.getPosX() - 1;
-                    newPosY =  focused.getPosY();
-                    break;
-                case TOP:
-                    newPosX =  focused.getPosX() + 1;
-                    newPosY =  focused.getPosY();
-                    break;
-                case LEFT:
-                    newPosX =  focused.getPosX();
-                    newPosY =  focused.getPosY() - 1;
-                    break;
-                case RIGHT:
-                    newPosX =  focused.getPosX();
-                    newPosY =  focused.getPosY() + 1;
-                    break;
+        int rand = r.nextInt(2);
+        if(this.getPosX() == enemy.getPosX()){
+            if(this.getPosY() > enemy.getPosY()){
+                switch (rand){
+                    case 1:
+                        return Direction.TOP;
+                    case 2:
+                        return Direction.BOT;
+                    default:
+                        return Direction.RIGHT;
+                }
             }
-        }while(terrain.isOutOfBounds(newPosX, newPosY));
-
-        canAttack = moveTo(terrain, newPosX, newPosY);
-
-        if(canAttack){
-            switch (attack(focused)){
-                case WIN:
-                    // Adversaire vaincu
-                    break;
-                case LOST:
-                    // Agent mort au combat
-                    break;
-                case DRAW:
-                    // Les deux combattants sont en vie
-                    break;
+            else {
+                switch (rand){
+                    case 1:
+                        return Direction.TOP;
+                    case 2:
+                        return Direction.BOT;
+                    default:
+                        return Direction.LEFT;
+                }
+            }
+        }
+        if(this.getPosX() > enemy.getPosX()){
+            switch (rand){
+                case 1:
+                    return Direction.LEFT;
+                case 2:
+                    return Direction.RIGHT;
+                default :
+                    return Direction.TOP;
+            }
+        }
+        else {
+            switch (rand){
+                case 1:
+                    return Direction.RIGHT;
+                case 2:
+                    return Direction.LEFT;
+                default:
+                    return Direction.BOT;
             }
         }
     }
 
-    public abstract FightStatus attack(Agent enemy);
+    protected List<Agent> findEnemiesAtRange(AbstractTerrain terrain, List<Agent> enemyTeam){
+        List<Agent> atRange = new LinkedList<>();
 
-    private Direction getDirection(Agent enemy) {
-        if (this.getPosX() == enemy.getPosX()) {
-            if (this.getPosY() > enemy.getPosY()) {
-                return Direction.RIGHT;
-            } else {
-                return Direction.LEFT;
+        // Check LEFT
+        if (!terrain.isOutOfBounds(this.getPosX(), this.getPosY() - this.getRange()) && !terrain.isFree(this.getPosX(), this.getPosY() - this.getRange())) {
+            if(enemyTeam.contains(terrain.agents[this.getPosX()][this.getPosY() - this.getRange()])){
+                atRange.add(terrain.agents[this.getPosX()][this.getPosY() - this.getRange()]);
             }
         }
-        if (this.getPosX() > enemy.getPosX()) {
-            return Direction.TOP;
-        } else {
-            return Direction.BOT;
+        // Check RIGHT
+        if (!terrain.isOutOfBounds(this.getPosX(), this.getPosY() + this.getRange()) && !terrain.isFree(this.getPosX(), this.getPosY() + this.getRange())) {
+            if(enemyTeam.contains(terrain.agents[this.getPosX()][this.getPosY() + this.getRange()])){
+                atRange.add(terrain.agents[this.getPosX()][this.getPosY() + this.getRange()]);
+            }
         }
+        // Check BOT
+        if (!terrain.isOutOfBounds(this.getPosX() - this.getRange(), this.getPosY())  && !terrain.isFree(this.getPosX() - this.getRange(), this.getPosY())) {
+            if(enemyTeam.contains(terrain.agents[this.getPosX() - this.getRange()][this.getPosY()])){
+                atRange.add(terrain.agents[this.getPosX() - this.getRange()][this.getPosY()]);
+            }
+        }
+        // Check TOP
+        if (!terrain.isOutOfBounds(this.getPosX() + this.getRange(), this.getPosY()) && !terrain.isFree(this.getPosX() + this.getRange(), this.getPosY())) {
+            if(enemyTeam.contains(terrain.agents[this.getPosX() + this.getRange()][this.getPosY()])){
+                atRange.add(terrain.agents[this.getPosX() + this.getRange()][this.getPosY()]);
+            }
+        }
+
+        return atRange;
     }
 }
