@@ -1,5 +1,6 @@
 package Model.Agent;
 
+import Model.Game.RandomSingleton;
 import Model.Terrain.AbstractTerrain;
 
 import java.util.LinkedList;
@@ -19,8 +20,7 @@ public abstract class MeleeAgent extends Agent{
 
     @Override
     protected Direction getDirection(Agent enemy) {
-        Random r = new Random();
-        int rand = r.nextInt(2);
+        int rand = RandomSingleton.getInstance().nextInt(2);
         if(this.getPosX() == enemy.getPosX()){
             if(this.getPosY() > enemy.getPosY()){
                 switch (rand){

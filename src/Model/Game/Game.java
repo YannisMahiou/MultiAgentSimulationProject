@@ -5,7 +5,9 @@ import Model.Agent.AgentType;
 import Model.Factory.AgentFactory;
 import Model.Terrain.AbstractTerrain;
 import Model.Terrain.Terrain;
+import sun.nio.cs.Surrogate;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -13,6 +15,9 @@ public class Game {
 
     private static final String ANSI_RED = "\u001B[31m";
     private static final String ANSI_BLUE = "\u001B[34m";
+
+    long seed = 0;
+
 
     /**
      * Main function called when launching the MultiAgentSimulation
@@ -30,7 +35,6 @@ public class Game {
             LinkedList<Agent> agentsTeam2 = new LinkedList<>();
 
             // Random variates
-            Random generator = new Random();
             int type = 0;
 
             // Creation of the Agent Factory
@@ -38,7 +42,7 @@ public class Game {
 
             // Agent Creation loop
             for (int i = 0; i < 20; ++i) {
-                type = generator.nextInt(AgentType.values().length);
+            type = RandomSingleton.getInstance().nextInt(AgentType.values().length);
 
                 // Switch the type of Agent
                 switch (type) {
@@ -59,7 +63,7 @@ public class Game {
 
             // Agent Creation loop
             for (int i = 0; i < 20; ++i) {
-                type = generator.nextInt(AgentType.values().length);
+                type = RandomSingleton.getInstance().nextInt(AgentType.values().length);
 
                 // Switch the type of Agent
                 switch (type) {
@@ -79,18 +83,37 @@ public class Game {
             }
 
             // We place the teams on the board
-            terrain.placeAgents(agentsTeam1, 0);
-            terrain.placeAgents(agentsTeam2, 1);
+            terrain.placeAgents(agentsTeam1);
+            terrain.placeAgents(agentsTeam2);
             terrain.showTerrain();
             System.out.println("\n");
 
-            for (int j = 0; j < agentsTeam1.size(); ++j) {
-                agentsTeam1.get(j).actionTurn(terrain, agentsTeam2, agentsTeam1);
-                System.out.print(j);
-                System.out.print(" ");
+            Iterator<Agent> itTeam1 = agentsTeam1.iterator();
+            Iterator<Agent> itTeam2 = agentsTeam2.iterator();
+
+            for(int i = 0; i < 20; ++i)
+            {
+                System.out.println(" \n Iteration" + i);
+                while(itTeam1.hasNext() && itTeam2.hasNext())
+                {
+                    System.out.println(itTeam1.hasNext());
+                    if(itTeam1.next().getAlive()){
+                        itTeam1.next().actionTurn(terrain, agentsTeam2, agentsTeam1);
+                    }
+
+                    if(itTeam2.next().getAlive())
+                    {
+                        itTeam2.next().actionTurn(terrain, agentsTeam1, agentsTeam2);
+                    }
+                    //System.out.println("\n");
+                }
+                terrain.showTerrain();
+                System.out.println();
+                itTeam1 = agentsTeam1.iterator();
+                itTeam2 = agentsTeam2.iterator();
+
             }
-            System.out.println();
-            terrain.showTerrain();
+
         } catch (Exception e) {
             System.err.println("[Exception]");
             e.printStackTrace();

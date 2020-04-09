@@ -1,6 +1,7 @@
 package Model.Terrain;
 
 import Model.Agent.Agent;
+import Model.Game.RandomSingleton;
 
 import java.util.List;
 import java.util.Random;
@@ -71,10 +72,9 @@ public abstract class AbstractTerrain {
      *
      * @param team Agents team created
      */
-    public void placeAgents(List<Agent> team, int side) {
+    public void placeAgents(List<Agent> team) {
 
         // Initialisation of variables
-        Random generator = new Random();
         int randX;
         int randY;
 
@@ -83,16 +83,11 @@ public abstract class AbstractTerrain {
 
             // Do While the place on the Terrain is not free
             do {
+
                 //Generates 2 random numbers
-                randX = generator.nextInt(SIZEY);
-                randY = generator.nextInt(NBAGENTS);
-
-                // Place the agent on the right side
-                if (side == 1) {
-                    randX = NBAGENTS - generator.nextInt(SIZEY) - side;
-                }
+                randX = RandomSingleton.getInstance().nextInt(NBAGENTS);
+                randY = RandomSingleton.getInstance().nextInt(NBAGENTS);
             } while (!isFree(randX, randY));
-
 
             // Place an Agent
             agents[randX][randY] = agent;
