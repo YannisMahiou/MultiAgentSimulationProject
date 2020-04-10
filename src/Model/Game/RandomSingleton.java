@@ -9,7 +9,7 @@ public class RandomSingleton {
     private static long seed = 0;
 
     private RandomSingleton(){
-        generator = new Random(0);
+        generator = new Random();
     }
 
     /**

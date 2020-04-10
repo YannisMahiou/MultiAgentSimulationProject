@@ -16,9 +16,8 @@ public class Game {
     private static final String ANSI_RED = "\u001B[31m";
     private static final String ANSI_BLUE = "\u001B[34m";
     private static final int TEAM_SIZE = 20;
-
-    long seed = 0;
-
+    private static final int NB_ITE = 30;
+    private static final int NB_EXPERIENCES = 30;
 
     /**
      * Main function called when launching the MultiAgentSimulation
@@ -27,123 +26,146 @@ public class Game {
      */
     public static void main(String[] args) {
 
-        // Try Loop used to catch Exception coming from lower levels
-        try {
+        int nbVictoryRed = 0;
+        int nbVictoryBlue = 0;
+        int nbTurns = 0;
+        float meanVictory;
+        float cumulate = 0;
+        float[] experiences = new float[NB_EXPERIENCES];
 
-            // Initialisation of variables
-            AbstractTerrain terrain = new Terrain(20, 20);
-            LinkedList<Agent> blueTeam = new LinkedList<>();
-            LinkedList<Agent> redTeam = new LinkedList<>();
+        for(int nbExperiences = 0; nbExperiences < NB_EXPERIENCES; ++nbExperiences) {
+            for (int turn = 0; turn < NB_ITE; ++turn) {
+                // Try Loop used to catch Exception coming from lower levels
+                try {
 
-            int blueTeamSize = TEAM_SIZE, redTeamSize = TEAM_SIZE;
-            Agent currentBlueTeamAgent, currentRedTeamAgent;
+                    // Initialisation of variables
+                    AbstractTerrain terrain = new Terrain(20, 20);
+                    LinkedList<Agent> blueTeam = new LinkedList<>();
+                    LinkedList<Agent> redTeam = new LinkedList<>();
 
-            // Random variates
-            int type = 0;
+                    int blueTeamSize = TEAM_SIZE, redTeamSize = TEAM_SIZE;
+                    Agent currentBlueTeamAgent, currentRedTeamAgent;
 
-            // Creation of the Agent Factory
-            AgentFactory factory = new AgentFactory();
+                    // Random variates
+                    int type = 0;
 
-            // Agent Creation loop
-            for (int i = 0; i < TEAM_SIZE; ++i) {
-            type = RandomSingleton.getInstance().nextInt(AgentType.values().length);
+                    // Creation of the Agent Factory
+                    AgentFactory factory = new AgentFactory();
 
-                // Switch the type of Agent
-                switch (type) {
-                    case 0:
-                        blueTeam.add(factory.create(AgentType.AXEMAN, ANSI_RED));
-                        break;
-                    case 1:
-                        blueTeam.add(factory.create(AgentType.BOWMAN, ANSI_RED));
-                        break;
-                    case 2:
-                        blueTeam.add(factory.create(AgentType.KNIGHT, ANSI_RED));
-                        break;
-                    case 3:
-                        blueTeam.add(factory.create(AgentType.LANCER, ANSI_RED));
-                        break;
-                }
-            }
+                    // Agent Creation loop
+                    for (int i = 0; i < TEAM_SIZE; ++i) {
+                        type = RandomSingleton.getInstance().nextInt(AgentType.values().length);
 
-            // Agent Creation loop
-            for (int i = 0; i < TEAM_SIZE; ++i) {
-                type = RandomSingleton.getInstance().nextInt(AgentType.values().length);
-
-                // Switch the type of Agent
-                switch (type) {
-                    case 0:
-                        redTeam.add(factory.create(AgentType.AXEMAN, ANSI_BLUE));
-                        break;
-                    case 1:
-                        redTeam.add(factory.create(AgentType.BOWMAN, ANSI_BLUE));
-                        break;
-                    case 2:
-                        redTeam.add(factory.create(AgentType.KNIGHT, ANSI_BLUE));
-                        break;
-                    case 3:
-                        redTeam.add(factory.create(AgentType.LANCER, ANSI_BLUE));
-                        break;
-                }
-            }
-
-            // We place the teams on the board
-            terrain.placeAgents(blueTeam);
-            terrain.placeAgents(redTeam);
-            terrain.showTerrain();
-            System.out.println("\n");
-
-            Iterator<Agent> blueTeamIterator = blueTeam.iterator();
-            Iterator<Agent> redTeamIterator = redTeam.iterator();
-
-            for(int i = 0; i < 100 && (blueTeamSize > 0 && redTeamSize > 0); ++i)
-            {
-                System.out.println(" \n Iteration" + i);
-                while(blueTeamIterator.hasNext() && redTeamIterator.hasNext())
-                {
-                    currentBlueTeamAgent = blueTeamIterator.next();
-                    if(redTeamSize > 0 && currentBlueTeamAgent.isAlive()){
-                        switch (currentBlueTeamAgent.actionTurn(terrain, redTeam, blueTeam)){
-                            case LOST:
-                                blueTeamSize-=1;
+                        // Switch the type of Agent
+                        switch (type) {
+                            case 0:
+                                blueTeam.add(factory.create(AgentType.AXEMAN, ANSI_RED));
                                 break;
-                            case WIN:
-                                redTeamSize-=1;
+                            case 1:
+                                blueTeam.add(factory.create(AgentType.BOWMAN, ANSI_RED));
+                                break;
+                            case 2:
+                                blueTeam.add(factory.create(AgentType.KNIGHT, ANSI_RED));
+                                break;
+                            case 3:
+                                blueTeam.add(factory.create(AgentType.LANCER, ANSI_RED));
                                 break;
                         }
                     }
 
-                    currentRedTeamAgent = redTeamIterator.next();
-                    if(blueTeamSize > 0 && currentRedTeamAgent.isAlive())
-                    {
-                        switch (currentRedTeamAgent.actionTurn(terrain, blueTeam, redTeam)){
-                            case LOST:
-                                redTeamSize-=1;
+                    // Agent Creation loop
+                    for (int i = 0; i < TEAM_SIZE; ++i) {
+                        type = RandomSingleton.getInstance().nextInt(AgentType.values().length);
+
+                        // Switch the type of Agent
+                        switch (type) {
+                            case 0:
+                                redTeam.add(factory.create(AgentType.AXEMAN, ANSI_BLUE));
                                 break;
-                            case WIN:
-                                blueTeamSize-=1;
+                            case 1:
+                                redTeam.add(factory.create(AgentType.BOWMAN, ANSI_BLUE));
+                                break;
+                            case 2:
+                                redTeam.add(factory.create(AgentType.KNIGHT, ANSI_BLUE));
+                                break;
+                            case 3:
+                                redTeam.add(factory.create(AgentType.LANCER, ANSI_BLUE));
                                 break;
                         }
                     }
-                    //System.out.println("\n");
+
+                    // We place the teams on the board
+                    terrain.placeAgents(blueTeam);
+                    terrain.placeAgents(redTeam);
+                    terrain.showTerrain();
+                    System.out.println("\n");
+
+                    Iterator<Agent> blueTeamIterator = blueTeam.iterator();
+                    Iterator<Agent> redTeamIterator = redTeam.iterator();
+
+                    for (int i = 0; i < 100 && (blueTeamSize > 0 && redTeamSize > 0); ++i) {
+                        System.out.println(" \n Iteration" + i);
+                        while (blueTeamIterator.hasNext() && redTeamIterator.hasNext()) {
+                            currentBlueTeamAgent = blueTeamIterator.next();
+                            if (redTeamSize > 0 && currentBlueTeamAgent.isAlive()) {
+                                switch (currentBlueTeamAgent.actionTurn(terrain, redTeam, blueTeam)) {
+                                    case LOST:
+                                        blueTeamSize -= 1;
+                                        break;
+                                    case WIN:
+                                        redTeamSize -= 1;
+                                        break;
+                                }
+                            }
+
+                            currentRedTeamAgent = redTeamIterator.next();
+                            if (blueTeamSize > 0 && currentRedTeamAgent.isAlive()) {
+                                switch (currentRedTeamAgent.actionTurn(terrain, blueTeam, redTeam)) {
+                                    case LOST:
+                                        redTeamSize -= 1;
+                                        break;
+                                    case WIN:
+                                        blueTeamSize -= 1;
+                                        break;
+                                }
+                            }
+                            //System.out.println("\n");
+                        }
+                        terrain.showTerrain();
+                        System.out.println();
+                        blueTeamIterator = blueTeam.iterator();
+                        redTeamIterator = redTeam.iterator();
+
+                    }
+
+                    if (blueTeamSize == 0) {
+                        System.out.println("Victoire de l'équipe Bleu");
+                        nbVictoryBlue++;
+                    } else {
+                        System.out.println("Victoire de l'équipe Rouge");
+                        nbVictoryRed++;
+                    }
+
+                    nbTurns++;
+
+                } catch (Exception e) {
+                    System.err.println("[Exception]");
+                    e.printStackTrace();
+                    System.err.println("End of Main method");
                 }
-                terrain.showTerrain();
-                System.out.println();
-                blueTeamIterator = blueTeam.iterator();
-                redTeamIterator = redTeam.iterator();
-
             }
 
-            if(blueTeamSize == 0){
-                System.out.println("Victoire de l'équipe Bleu");
-            }
-            else{
-                System.out.println("Victoire de l'équipe Rouge");
-            }
-        } catch (Exception e) {
-            System.err.println("[Exception]");
-            e.printStackTrace();
-            System.err.println("End of Main method");
+            experiences[nbExperiences] = (float)nbVictoryRed/nbTurns;
         }
+
+        System.out.println("Statistics part");
+        for(int i = 0; i< NB_EXPERIENCES; ++i)
+        {
+            System.out.println("EXPERIENCE "+ i +" : RED won " + experiences[i] + " % games and BLUE won " + (1 - experiences[i]) + " % games");
+            cumulate += experiences[i];
+        }
+
+        System.out.println("\n MEAN of the Experiences : " + cumulate / NB_EXPERIENCES + "% won by RED and " + (1 - cumulate / NB_EXPERIENCES) + " won by BLUE");
     }
 
 }
