@@ -1,15 +1,18 @@
 package Model.Game;
 
 import Model.Agent.Agent;
-import Model.Agent.AgentType;
 import Model.Factory.AgentFactory;
+import Model.Strategy.ChaosAgentCreationStrategy;
+import Model.Strategy.IAgentCreationStrategy;
+import Model.Strategy.RandomCompAgentCreationStrategy;
+import Model.Strategy.StandardAgentCreationStrategy;
 import Model.Terrain.AbstractTerrain;
 import Model.Terrain.Terrain;
-import sun.nio.cs.Surrogate;
 
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Random;
+import java.util.List;
+import java.util.Scanner;
 
 public class Game {
 
@@ -18,6 +21,7 @@ public class Game {
     private static final int TEAM_SIZE = 20;
     private static final int NB_ITE = 30;
     private static final int NB_EXPERIENCES = 30;
+    private static final int NO_BONUS = 0;
 
     /**
      * Main function called when launching the MultiAgentSimulation
@@ -32,8 +36,12 @@ public class Game {
         float meanVictory;
         float cumulate = 0;
         float[] experiences = new float[NB_EXPERIENCES];
+        int choice = -1, bonus = 0;
 
-        for(int nbExperiences = 0; nbExperiences < NB_EXPERIENCES; ++nbExperiences) {
+        choice = startup();
+        bonus = fillBonus(choice);
+
+        for (int nbExperiences = 0; nbExperiences < NB_EXPERIENCES; ++nbExperiences) {
             for (int turn = 0; turn < NB_ITE; ++turn) {
                 // Try Loop used to catch Exception coming from lower levels
                 try {
@@ -46,53 +54,8 @@ public class Game {
                     int blueTeamSize = TEAM_SIZE, redTeamSize = TEAM_SIZE;
                     Agent currentBlueTeamAgent, currentRedTeamAgent;
 
-                    // Random variates
-                    int type = 0;
-
-                    // Creation of the Agent Factory
-                    AgentFactory factory = new AgentFactory();
-
-                    // Agent Creation loop
-                    for (int i = 0; i < TEAM_SIZE; ++i) {
-                        type = RandomSingleton.getInstance().nextInt(AgentType.values().length);
-
-                        // Switch the type of Agent
-                        switch (type) {
-                            case 0:
-                                blueTeam.add(factory.create(AgentType.AXEMAN, ANSI_RED));
-                                break;
-                            case 1:
-                                blueTeam.add(factory.create(AgentType.BOWMAN, ANSI_RED));
-                                break;
-                            case 2:
-                                blueTeam.add(factory.create(AgentType.KNIGHT, ANSI_RED));
-                                break;
-                            case 3:
-                                blueTeam.add(factory.create(AgentType.LANCER, ANSI_RED));
-                                break;
-                        }
-                    }
-
-                    // Agent Creation loop
-                    for (int i = 0; i < TEAM_SIZE; ++i) {
-                        type = RandomSingleton.getInstance().nextInt(AgentType.values().length);
-
-                        // Switch the type of Agent
-                        switch (type) {
-                            case 0:
-                                redTeam.add(factory.create(AgentType.AXEMAN, ANSI_BLUE));
-                                break;
-                            case 1:
-                                redTeam.add(factory.create(AgentType.BOWMAN, ANSI_BLUE));
-                                break;
-                            case 2:
-                                redTeam.add(factory.create(AgentType.KNIGHT, ANSI_BLUE));
-                                break;
-                            case 3:
-                                redTeam.add(factory.create(AgentType.LANCER, ANSI_BLUE));
-                                break;
-                        }
-                    }
+                    // Agent Creation
+                    createTeams(blueTeam, redTeam, choice, bonus);
 
                     // We place the teams on the board
                     terrain.placeAgents(blueTeam);
@@ -139,11 +102,11 @@ public class Game {
                     }
 
                     if (blueTeamSize == 0) {
-                        System.out.println("Victoire de l'équipe Bleu");
-                        nbVictoryBlue++;
-                    } else {
                         System.out.println("Victoire de l'équipe Rouge");
                         nbVictoryRed++;
+                    } else {
+                        System.out.println("Victoire de l'équipe Bleue");
+                        nbVictoryBlue++;
                     }
 
                     nbTurns++;
@@ -155,17 +118,71 @@ public class Game {
                 }
             }
 
-            experiences[nbExperiences] = (float)nbVictoryRed/nbTurns;
+            experiences[nbExperiences] = (float) nbVictoryRed / nbTurns;
         }
 
         System.out.println("Statistics part");
-        for(int i = 0; i< NB_EXPERIENCES; ++i)
-        {
-            System.out.println("EXPERIENCE "+ i +" : RED won " + experiences[i] + " % games and BLUE won " + (1 - experiences[i]) + " % games");
+        for (int i = 0; i < NB_EXPERIENCES; ++i) {
+            System.out.println("EXPERIENCE " + i + " : RED won " + experiences[i] + " % games and BLUE won " + (1 - experiences[i]) + " % games");
             cumulate += experiences[i];
         }
 
-        System.out.println("\n MEAN of the Experiences : " + cumulate / NB_EXPERIENCES + "% won by RED and " + (1 - cumulate / NB_EXPERIENCES) + " won by BLUE");
+        System.out.println("\n MEAN of the Experiences : " + cumulate / NB_EXPERIENCES * 100 + "% won by RED and " + (100 - cumulate / NB_EXPERIENCES * 100) + " won by BLUE");
     }
 
+    private static void createTeams(List<Agent> blueTeam, List<Agent> redTeam, int choice, int bonus) throws Exception {
+        IAgentCreationStrategy agentCreationStrategy;
+
+        switch (choice) {
+            case 1:
+                agentCreationStrategy = new ChaosAgentCreationStrategy();
+
+                agentCreationStrategy.createTeam(blueTeam, TEAM_SIZE, ANSI_BLUE, bonus);
+                agentCreationStrategy.createTeam(redTeam, TEAM_SIZE, ANSI_RED, bonus);
+                break;
+            case 2:
+                agentCreationStrategy = new StandardAgentCreationStrategy();
+
+                agentCreationStrategy.createTeam(blueTeam, TEAM_SIZE, ANSI_BLUE, bonus);
+                agentCreationStrategy.createTeam(redTeam, TEAM_SIZE, ANSI_RED, NO_BONUS);
+                break;
+            case 3:
+                agentCreationStrategy = new RandomCompAgentCreationStrategy();
+
+                agentCreationStrategy.createTeam(blueTeam, TEAM_SIZE, ANSI_BLUE, NO_BONUS);
+                agentCreationStrategy.createTeam(redTeam, TEAM_SIZE, ANSI_RED, NO_BONUS);
+                break;
+            default:
+                agentCreationStrategy = new StandardAgentCreationStrategy();
+
+                agentCreationStrategy.createTeam(blueTeam, TEAM_SIZE, ANSI_BLUE, NO_BONUS);
+                agentCreationStrategy.createTeam(redTeam, TEAM_SIZE, ANSI_RED, NO_BONUS);
+                break;
+        }
+    }
+
+    private static int startup() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Bienvenue dans la simulation colisée ! Veuillez choisir le type de simulation parmis la liste ci-dessous :");
+        System.out.println("Simulation type 1 : Mode chaos, statistiques des unités randomisées (malus ou bonus allant jusqu'à 5) et composition totalement aléatoire");
+        System.out.println("Simulation type 2 : Mode avantage, statistiques des unités de l'équipe bleue boostées");
+        System.out.println("Simulation type 3 : Compositions aléatoires");
+        System.out.println("Simulation standard : Mode équilibré");
+        System.out.print("Votre choix : ");
+
+        return scanner.nextInt();
+    }
+
+    private static int fillBonus(int choice) {
+
+        if (choice == 2) {
+            Scanner scanner = new Scanner(System.in);
+
+            System.out.print("Saisir la valeur du bonus : ");
+
+            return scanner.nextInt();
+        }
+        return NO_BONUS;
+    }
 }

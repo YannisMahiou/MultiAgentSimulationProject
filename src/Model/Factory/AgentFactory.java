@@ -7,22 +7,22 @@ public class AgentFactory implements IFactory {
     public AgentFactory() {
     }
 
-    public Agent create(AgentType type, String color) throws Exception {
+    public Agent create(AgentType type, String color, int bonus) throws Exception {
         switch (type) {
             case BOWMAN:
-                return new BowMan(25, 5, 10, 16, color);
+                return new BowMan(25 + bonus, 5 + bonus, 10 + bonus, 16 + bonus, color);
 
             case AXEMAN:
-                return new AxeMan(25, 5, 10, 16, color);
+                return new AxeMan(25 + bonus, 5 + bonus, 10 + bonus, 16 + bonus, color);
 
             case LANCER:
-                return new Lancer(25, 5, 10, 16, color);
+                return new Lancer(25 + bonus, 5 + bonus, 10 + bonus, 16 + bonus, color);
 
             case KNIGHT:
-                return new Knight(25, 5, 10, 16, color);
+                return new Knight(25 + bonus, 5 + bonus, 10 + bonus, 16 + bonus, color);
 
             default:
-                throw new Exception("Exception : Not an Model.Agent");
+                throw new Exception("Exception : Not an Agent");
         }
     }
 
