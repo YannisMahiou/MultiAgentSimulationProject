@@ -117,6 +117,7 @@ public abstract class AbstractTerrain {
         if(isFree(agent.getPosX(), agent.getPosY())){
             throw new IllegalStateException();
         }
+
         agents[agent.getPosX()][agent.getPosY()] = null;
         agents[posX][posY] = agent;
     }

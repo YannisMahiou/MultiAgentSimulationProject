@@ -229,6 +229,8 @@ public abstract class Agent {
 
         if (terrain.isFree(posX, posY)) {
             terrain.updateAgentCoordinates(this, posX, posY);
+            this.setPosX(posX);
+            this.setPosY(posY);
             return true;
         }
         return false;
