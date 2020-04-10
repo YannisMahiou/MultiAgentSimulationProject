@@ -18,7 +18,6 @@ public abstract class Agent {
     private int posX;
     private int posY;
     private String color;
-    private boolean isAlive;
 
     /**
      * Agent constructor
@@ -37,89 +36,86 @@ public abstract class Agent {
         setStrength(strength);
         setRange(range);
         setColor(color);
-        setAlive(true);
     }
 
     // Methods from the interface IAgent
-    public void actionTurn(AbstractTerrain terrain, LinkedList<Agent> enemyTeam, LinkedList<Agent> alliedTeam) {
+    public FightStatus actionTurn(AbstractTerrain terrain, LinkedList<Agent> enemyTeam, LinkedList<Agent> alliedTeam) {
 
-        if (enemyTeam.size() > 0) {
-            List<Agent> closestEnemies = findEnemiesAtRange(terrain, enemyTeam);
-            Agent focused;
-            int newPosX = 0, newPosY = 0, rand;
+        List<Agent> closestEnemies = findEnemiesAtRange(terrain, enemyTeam);
+        Agent focused;
+        int newPosX = 0, newPosY = 0, rand;
 
-            if (closestEnemies.size() > 0) {
+        if (closestEnemies.size() > 0) {
+            rand = RandomSingleton.getInstance().nextInt(closestEnemies.size());
+            focused = closestEnemies.get(rand);
+        } else {
+            closestEnemies = findClosestEnemies(enemyTeam);
+
+            do {
                 rand = RandomSingleton.getInstance().nextInt(closestEnemies.size());
                 focused = closestEnemies.get(rand);
-            } else {
-                closestEnemies = findClosestEnemies(enemyTeam);
 
-                do {
-                    rand = RandomSingleton.getInstance().nextInt(closestEnemies.size());
-                    focused = closestEnemies.get(rand);
-
-                    switch (getDirection(focused)) {
-                        // Ranged and Melee units
-                        case BOT:
-                            newPosX = focused.getPosX() - range;
-                            newPosY = focused.getPosY();
-                            break;
-                        case TOP:
-                            newPosX = focused.getPosX() + range;
-                            newPosY = focused.getPosY();
-                            break;
-                        case LEFT:
-                            newPosX = focused.getPosX();
-                            newPosY = focused.getPosY() - range;
-                            break;
-                        case RIGHT:
-                            newPosX = focused.getPosX();
-                            newPosY = focused.getPosY() + range;
-                            break;
-                        // Ranged units Only
-                        case TOP_LEFT:
-                            newPosX = focused.getPosX() + 1;
-                            newPosY = focused.getPosY() - 1;
-                            break;
-                        case TOP_RIGHT:
-                            newPosX = focused.getPosX() + 1;
-                            newPosY = focused.getPosY() + 1;
-                            break;
-                        case BOTTOM_LEFT:
-                            newPosX = focused.getPosX() - 1;
-                            newPosY = focused.getPosY() - 1;
-                            break;
-                        case BOTTOM_RIGHT:
-                            newPosX = focused.getPosX() - 1;
-                            newPosY = focused.getPosY() + 1;
-                            break;
-                        default:
-                            throw new IllegalStateException("Unexpected value: " + getDirection(focused));
-                    }
-                } while (terrain.isOutOfBounds(newPosX, newPosY));
-            }
-
-            if (moveTo(terrain, newPosX, newPosY)) {
-                switch (attack(focused)) {
-                    case WIN:
-                        // The agent won the fight (killed the enemy)
-                        terrain.removeAgent(focused);
-                        System.out.println("win");
-                        focused.setAlive(false);
+                switch (getDirection(focused)) {
+                    // Ranged and Melee units
+                    case BOT:
+                        newPosX = focused.getPosX() - range;
+                        newPosY = focused.getPosY();
                         break;
-                    case LOST:
-                        // The agent lost the fight (killed by enemy)
-                        terrain.removeAgent(this);
-                        System.out.println("lose");
-                        setAlive(false);
+                    case TOP:
+                        newPosX = focused.getPosX() + range;
+                        newPosY = focused.getPosY();
                         break;
-                    case DRAW:
-                        // The 2 agents are alive
-                        System.out.println("draw");
+                    case LEFT:
+                        newPosX = focused.getPosX();
+                        newPosY = focused.getPosY() - range;
                         break;
+                    case RIGHT:
+                        newPosX = focused.getPosX();
+                        newPosY = focused.getPosY() + range;
+                        break;
+                    // Ranged units Only
+                    case TOP_LEFT:
+                        newPosX = focused.getPosX() + 1;
+                        newPosY = focused.getPosY() - 1;
+                        break;
+                    case TOP_RIGHT:
+                        newPosX = focused.getPosX() + 1;
+                        newPosY = focused.getPosY() + 1;
+                        break;
+                    case BOTTOM_LEFT:
+                        newPosX = focused.getPosX() - 1;
+                        newPosY = focused.getPosY() - 1;
+                        break;
+                    case BOTTOM_RIGHT:
+                        newPosX = focused.getPosX() - 1;
+                        newPosY = focused.getPosY() + 1;
+                        break;
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + getDirection(focused));
                 }
+            } while (terrain.isOutOfBounds(newPosX, newPosY));
+        }
+
+        if (moveTo(terrain, newPosX, newPosY)) {
+            switch (attack(focused)) {
+                case WIN:
+                    // The agent won the fight (killed the enemy)
+                    terrain.removeAgent(focused);
+                    // System.out.println("win");
+                    return FightStatus.WIN;
+                case LOST:
+                    // The agent lost the fight (killed by enemy)
+                    terrain.removeAgent(this);
+                    // System.out.println("lose");
+                    return FightStatus.LOST;
+                case DRAW:
+                    // The 2 agents are alive
+                    // System.out.println("draw");
+                    return FightStatus.DRAW;
             }
         }
+
+        return FightStatus.DRAW;
     }
 
     public abstract FightStatus attack(Agent enemy);
@@ -197,9 +193,11 @@ public abstract class Agent {
         double distance;
 
         for (Agent enemy : enemyTeam) {
-            distance = Math.sqrt((this.getPosX() - enemy.getPosX()) * (this.getPosX() - enemy.getPosX()) + (this.getPosY() - enemy.getPosY()) * (this.getPosY() - enemy.getPosY()));
+            if (enemy.isAlive()) {
+                distance = Math.sqrt((this.getPosX() - enemy.getPosX()) * (this.getPosX() - enemy.getPosX()) + (this.getPosY() - enemy.getPosY()) * (this.getPosY() - enemy.getPosY()));
 
-            closest.put(enemy, distance);
+                closest.put(enemy, distance);
+            }
         }
 
         List<Map.Entry<Agent, Double>> entries = new LinkedList<>(closest.entrySet());
@@ -247,13 +245,4 @@ public abstract class Agent {
     protected abstract List<Agent> findEnemiesAtRange(AbstractTerrain terrain, List<Agent> enemyTeam);
 
     protected abstract Direction getDirection(Agent enemy);
-
-    public final void setAlive(boolean alive) {
-        isAlive = alive;
-    }
-
-    public final boolean getAlive()
-    {
-        return isAlive;
-    }
 }

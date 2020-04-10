@@ -100,8 +100,8 @@ public abstract class AbstractTerrain {
      * Function called to show the terrain with the agents
      */
     public void showTerrain() {
-        for (int x = 0; x < NBAGENTS; ++x) {
-            for (int y = 0; y < NBAGENTS; ++y) {
+        for (int x = 0; x < NBAGENTS; x++) {
+            for (int y = 0; y < NBAGENTS; y++) {
                 if (isFree(x, y))
                     System.out.print("* ");
                 else System.out.print(agents[x][y].toString() + " ");
@@ -114,6 +114,9 @@ public abstract class AbstractTerrain {
      * Takes an agent and updates his coordinates
      */
     public void updateAgentCoordinates(Agent agent, int posX, int posY) {
+        if(isFree(agent.getPosX(), agent.getPosY())){
+            throw new IllegalStateException();
+        }
         agents[agent.getPosX()][agent.getPosY()] = null;
         agents[posX][posY] = agent;
     }

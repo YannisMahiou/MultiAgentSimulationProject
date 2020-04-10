@@ -15,6 +15,7 @@ public class Game {
 
     private static final String ANSI_RED = "\u001B[31m";
     private static final String ANSI_BLUE = "\u001B[34m";
+    private static final int TEAM_SIZE = 20;
 
     long seed = 0;
 
@@ -34,6 +35,9 @@ public class Game {
             LinkedList<Agent> agentsTeam1 = new LinkedList<>();
             LinkedList<Agent> agentsTeam2 = new LinkedList<>();
 
+            int teamSize1 = TEAM_SIZE, teamSize2 = TEAM_SIZE;
+            Agent currentAgentTeam1, currentAgentTeam2;
+
             // Random variates
             int type = 0;
 
@@ -41,7 +45,7 @@ public class Game {
             AgentFactory factory = new AgentFactory();
 
             // Agent Creation loop
-            for (int i = 0; i < 20; ++i) {
+            for (int i = 0; i < TEAM_SIZE; ++i) {
             type = RandomSingleton.getInstance().nextInt(AgentType.values().length);
 
                 // Switch the type of Agent
@@ -62,7 +66,7 @@ public class Game {
             }
 
             // Agent Creation loop
-            for (int i = 0; i < 20; ++i) {
+            for (int i = 0; i < TEAM_SIZE; ++i) {
                 type = RandomSingleton.getInstance().nextInt(AgentType.values().length);
 
                 // Switch the type of Agent
@@ -91,19 +95,37 @@ public class Game {
             Iterator<Agent> itTeam1 = agentsTeam1.iterator();
             Iterator<Agent> itTeam2 = agentsTeam2.iterator();
 
-            for(int i = 0; i < 20; ++i)
+            for(int i = 0; i < 100 && (teamSize1 > 0 || teamSize2 > 0); ++i)
             {
                 System.out.println(" \n Iteration" + i);
                 while(itTeam1.hasNext() && itTeam2.hasNext())
                 {
-                    System.out.println(itTeam1.hasNext());
-                    if(itTeam1.next().getAlive()){
-                        itTeam1.next().actionTurn(terrain, agentsTeam2, agentsTeam1);
+                    currentAgentTeam1 = itTeam1.next();
+                    if(teamSize2 > 0 && currentAgentTeam1.isAlive()){
+                        switch (currentAgentTeam1.actionTurn(terrain, agentsTeam2, agentsTeam1)){
+                            case LOST:
+                                teamSize1-=1;
+                                break;
+                            case WIN:
+                                teamSize2-=1;
+                                break;
+                        }
                     }
 
-                    if(itTeam2.next().getAlive())
+                    currentAgentTeam2 = itTeam2.next();
+                    if(teamSize1 > 0 && currentAgentTeam2.isAlive())
                     {
-                        itTeam2.next().actionTurn(terrain, agentsTeam1, agentsTeam2);
+                        switch (currentAgentTeam2.actionTurn(terrain, agentsTeam1, agentsTeam2)){
+                            case LOST:
+                                teamSize2-=1;
+                                break;
+                            case WIN:
+                                teamSize1-=1;
+                                break;
+                        }
+                    }
+                    else {
+                        System.out.println();
                     }
                     //System.out.println("\n");
                 }
@@ -114,6 +136,12 @@ public class Game {
 
             }
 
+            if(teamSize1 == 0){
+                System.out.println("Victoire de l'équipe 1");
+            }
+            else{
+                System.out.println("Victoire de l'équipe 2");
+            }
         } catch (Exception e) {
             System.err.println("[Exception]");
             e.printStackTrace();
