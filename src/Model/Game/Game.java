@@ -2,6 +2,8 @@ package Model.Game;
 
 import Model.Agent.Agent;
 import Model.Factory.AgentFactory;
+import Model.Serialization.DataManager;
+import Model.Serialization.FileDataManager;
 import Model.Strategy.ChaosAgentCreationStrategy;
 import Model.Strategy.IAgentCreationStrategy;
 import Model.Strategy.RandomCompAgentCreationStrategy;
@@ -37,30 +39,49 @@ public class Game {
         float cumulate = 0;
         float[] experiences = new float[NB_EXPERIENCES];
         int choice = -1, bonus = 0;
+        LinkedList<Agent> blueTeam = new LinkedList<>();
+        LinkedList<Agent> redTeam = new LinkedList<>();
+
+
+        // Serialization
+        DataManager dataManager = new FileDataManager();
 
         choice = startup();
         bonus = fillBonus(choice);
 
         for (int nbExperiences = 0; nbExperiences < NB_EXPERIENCES; ++nbExperiences) {
+
+            // Agent Creation
+            if(blueTeam.size() == 0 || redTeam.size() == 0) {
+                try {
+                    createTeams(blueTeam, redTeam, choice, bonus);
+
+                    System.out.println(nbExperiences + "Seria lization");
+                    // Serialize the teams
+                    dataManager.saveAgents("redTeam.ser", redTeam);
+                    dataManager.saveAgents("blueTeam.ser", blueTeam);
+
+                }catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+
             for (int turn = 0; turn < NB_ITE; ++turn) {
+
                 // Try Loop used to catch Exception coming from lower levels
                 try {
 
                     // Initialisation of variables
                     AbstractTerrain terrain = new Terrain(20, 20);
-                    LinkedList<Agent> blueTeam = new LinkedList<>();
-                    LinkedList<Agent> redTeam = new LinkedList<>();
 
                     int blueTeamSize = TEAM_SIZE, redTeamSize = TEAM_SIZE;
                     Agent currentBlueTeamAgent, currentRedTeamAgent;
 
-                    // Agent Creation
-                    createTeams(blueTeam, redTeam, choice, bonus);
-
                     // We place the teams on the board
                     terrain.placeAgents(blueTeam);
                     terrain.placeAgents(redTeam);
-                    terrain.showTerrain();
+                    //terrain.showTerrain();
                     System.out.println("\n");
 
                     Iterator<Agent> blueTeamIterator = blueTeam.iterator();
@@ -94,7 +115,7 @@ public class Game {
                             }
                             //System.out.println("\n");
                         }
-                        terrain.showTerrain();
+                        //terrain.showTerrain();
                         System.out.println();
                         blueTeamIterator = blueTeam.iterator();
                         redTeamIterator = redTeam.iterator();
@@ -111,6 +132,10 @@ public class Game {
 
                     nbTurns++;
 
+                    // Deserialize the teams
+                    redTeam = dataManager.loadAgents("redTeam.ser");
+                    blueTeam = dataManager.loadAgents("blueTeam.ser");
+
                 } catch (Exception e) {
                     System.err.println("[Exception]");
                     e.printStackTrace();
@@ -119,6 +144,8 @@ public class Game {
             }
 
             experiences[nbExperiences] = (float) nbVictoryRed / nbTurns;
+            blueTeam = new LinkedList<Agent>();
+            redTeam = new LinkedList<Agent>();
         }
 
         System.out.println("Statistics part");
