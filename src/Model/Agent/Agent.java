@@ -3,9 +3,10 @@ package Model.Agent;
 import Model.Game.RandomSingleton;
 import Model.Terrain.AbstractTerrain;
 
+import java.io.Serializable;
 import java.util.*;
 
-public abstract class Agent {
+public abstract class Agent implements Serializable {
 
     protected static double ADVANTAGE = 1.2;
     protected static double DISADVANTAGE = 0.8;
