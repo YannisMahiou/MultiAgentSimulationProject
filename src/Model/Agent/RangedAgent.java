@@ -5,7 +5,6 @@ import Model.Terrain.AbstractTerrain;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 public abstract class RangedAgent extends Agent {
 
@@ -13,8 +12,12 @@ public abstract class RangedAgent extends Agent {
         super(hp, damageReduction, speed, strength, range, color);
     }
 
-    public abstract FightStatus attack(Agent enemy);
-
+    /**
+     * Get a random direction to attack the focused enemy
+     *
+     * @param enemy the focused enemy
+     * @return the chosen direction
+     */
     protected Direction getDirection(Agent enemy) {
         int rand = RandomSingleton.getInstance().nextInt(2);
         if (this.getPosX() == enemy.getPosX()) {
@@ -59,6 +62,13 @@ public abstract class RangedAgent extends Agent {
         }
     }
 
+    /**
+     * Find all enemies at range (distance between enemy and agent = 2)
+     *
+     * @param terrain   the terrain
+     * @param enemyTeam the enemy team
+     * @return List<Agent> the list of enemies at Range (up to 8)
+     */
     protected List<Agent> findEnemiesAtRange(AbstractTerrain terrain, List<Agent> enemyTeam) {
         List<Agent> atRange = new LinkedList<>();
 
@@ -114,4 +124,22 @@ public abstract class RangedAgent extends Agent {
 
         return atRange;
     }
+
+    /**
+     * Tells if the agent can counter attack
+     *
+     * @param enemy the enemy to counter attack
+     * @return true if the distance between the agent and enemy = 2, false else
+     */
+    protected boolean canCounterAttack(Agent enemy) {
+        boolean canCounterAttack = false;
+        if (enemy instanceof RangedAgent) {
+            canCounterAttack = true;
+        }
+        return canCounterAttack;
+    }
+
+    protected abstract List<Agent> findBestTargets(List<Agent> targets, AbstractTerrain terrain);
+
+    protected abstract int calculateDamage(Agent enemy);
 }

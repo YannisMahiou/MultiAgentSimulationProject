@@ -5,25 +5,27 @@ import Model.Terrain.AbstractTerrain;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by yannis on 14/01/20.
  */
-public abstract class MeleeAgent extends Agent{
+public abstract class MeleeAgent extends Agent {
 
     public MeleeAgent(int hp, int damageReduction, int speed, int strength, int range, String color) {
         super(hp, damageReduction, speed, strength, range, color);
     }
 
-    public abstract FightStatus attack(Agent enemy);
-
-    @Override
+    /**
+     * Get a random direction to attack the focused enemy
+     *
+     * @param enemy the focused enemy
+     * @return the chosen direction
+     */
     protected Direction getDirection(Agent enemy) {
         int rand = RandomSingleton.getInstance().nextInt(2);
-        if(this.getPosX() == enemy.getPosX()){
-            if(this.getPosY() > enemy.getPosY()){
-                switch (rand){
+        if (this.getPosX() == enemy.getPosX()) {
+            if (this.getPosY() > enemy.getPosY()) {
+                switch (rand) {
                     case 1:
                         return Direction.TOP;
                     case 2:
@@ -31,9 +33,8 @@ public abstract class MeleeAgent extends Agent{
                     default:
                         return Direction.RIGHT;
                 }
-            }
-            else {
-                switch (rand){
+            } else {
+                switch (rand) {
                     case 1:
                         return Direction.TOP;
                     case 2:
@@ -43,18 +44,17 @@ public abstract class MeleeAgent extends Agent{
                 }
             }
         }
-        if(this.getPosX() > enemy.getPosX()){
-            switch (rand){
+        if (this.getPosX() > enemy.getPosX()) {
+            switch (rand) {
                 case 1:
                     return Direction.LEFT;
                 case 2:
                     return Direction.RIGHT;
-                default :
+                default:
                     return Direction.TOP;
             }
-        }
-        else {
-            switch (rand){
+        } else {
+            switch (rand) {
                 case 1:
                     return Direction.RIGHT;
                 case 2:
@@ -65,34 +65,59 @@ public abstract class MeleeAgent extends Agent{
         }
     }
 
-    protected List<Agent> findEnemiesAtRange(AbstractTerrain terrain, List<Agent> enemyTeam){
+    /**
+     * Find all enemies at range (distance between enemy and agent = 1)
+     *
+     * @param terrain   the terrain
+     * @param enemyTeam the enemy team
+     * @return List<Agent> the list of enemies at Range (up to 4)
+     */
+    protected List<Agent> findEnemiesAtRange(AbstractTerrain terrain, List<Agent> enemyTeam) {
         List<Agent> atRange = new LinkedList<>();
 
         // Check LEFT
         if (!terrain.isOutOfBounds(this.getPosX(), this.getPosY() - this.getRange()) && !terrain.isFree(this.getPosX(), this.getPosY() - this.getRange())) {
-            if(enemyTeam.contains(terrain.agents[this.getPosX()][this.getPosY() - this.getRange()])){
+            if (enemyTeam.contains(terrain.agents[this.getPosX()][this.getPosY() - this.getRange()])) {
                 atRange.add(terrain.agents[this.getPosX()][this.getPosY() - this.getRange()]);
             }
         }
         // Check RIGHT
         if (!terrain.isOutOfBounds(this.getPosX(), this.getPosY() + this.getRange()) && !terrain.isFree(this.getPosX(), this.getPosY() + this.getRange())) {
-            if(enemyTeam.contains(terrain.agents[this.getPosX()][this.getPosY() + this.getRange()])){
+            if (enemyTeam.contains(terrain.agents[this.getPosX()][this.getPosY() + this.getRange()])) {
                 atRange.add(terrain.agents[this.getPosX()][this.getPosY() + this.getRange()]);
             }
         }
         // Check BOT
-        if (!terrain.isOutOfBounds(this.getPosX() - this.getRange(), this.getPosY())  && !terrain.isFree(this.getPosX() - this.getRange(), this.getPosY())) {
-            if(enemyTeam.contains(terrain.agents[this.getPosX() - this.getRange()][this.getPosY()])){
+        if (!terrain.isOutOfBounds(this.getPosX() - this.getRange(), this.getPosY()) && !terrain.isFree(this.getPosX() - this.getRange(), this.getPosY())) {
+            if (enemyTeam.contains(terrain.agents[this.getPosX() - this.getRange()][this.getPosY()])) {
                 atRange.add(terrain.agents[this.getPosX() - this.getRange()][this.getPosY()]);
             }
         }
         // Check TOP
         if (!terrain.isOutOfBounds(this.getPosX() + this.getRange(), this.getPosY()) && !terrain.isFree(this.getPosX() + this.getRange(), this.getPosY())) {
-            if(enemyTeam.contains(terrain.agents[this.getPosX() + this.getRange()][this.getPosY()])){
+            if (enemyTeam.contains(terrain.agents[this.getPosX() + this.getRange()][this.getPosY()])) {
                 atRange.add(terrain.agents[this.getPosX() + this.getRange()][this.getPosY()]);
             }
         }
 
         return atRange;
     }
+
+    /**
+     * Tells if the agent can counter attack
+     *
+     * @param enemy the enemy to counter attack
+     * @return true if the distance between the agent and enemy = 1, false else
+     */
+    protected boolean canCounterAttack(Agent enemy) {
+        boolean canCounterAttack = false;
+        if (enemy instanceof MeleeAgent) {
+            canCounterAttack = true;
+        }
+        return canCounterAttack;
+    }
+
+    protected abstract List<Agent> findBestTargets(List<Agent> targets, AbstractTerrain terrain);
+
+    protected abstract int calculateDamage(Agent enemy);
 }

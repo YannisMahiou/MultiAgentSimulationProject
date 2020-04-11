@@ -67,7 +67,7 @@ public class Game {
                     Iterator<Agent> redTeamIterator = redTeam.iterator();
 
                     for (int i = 0; i < 100 && (blueTeamSize > 0 && redTeamSize > 0); ++i) {
-                        System.out.println(" \n Iteration" + i);
+                        System.out.println(" \n Iteration " + i);
                         while (blueTeamIterator.hasNext() && redTeamIterator.hasNext()) {
                             currentBlueTeamAgent = blueTeamIterator.next();
                             if (redTeamSize > 0 && currentBlueTeamAgent.isAlive()) {

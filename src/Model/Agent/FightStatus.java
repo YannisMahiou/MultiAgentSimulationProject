@@ -3,5 +3,6 @@ package Model.Agent;
 public enum FightStatus {
     DRAW,
     WIN,
-    LOST
+    LOST,
+    NO_FIGHT
 }
