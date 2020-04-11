@@ -154,6 +154,13 @@ public abstract class Agent {
      * @return the status of the Fight : WIN if he killed an enemy, LOST if he died in battle, DRAW if both units are alive after a fight
      */
     public FightStatus attack(Agent enemy) {
+        if(!enemy.isAlive()){
+            throw new IllegalStateException("Enemy is already dead");
+        }
+        if(!this.isAlive()){
+            throw  new IllegalStateException("Agent is already dead");
+        }
+
         // Compute damage and enemy counter damage
         int damage = this.calculateDamage(enemy);
         int enemyCounterDamage = enemy.calculateDamage(this);
@@ -181,7 +188,7 @@ public abstract class Agent {
         }
 
         // If this agent can do a double attack
-        if (this.getSpeed() - enemy.getSpeed() > DOUBLE_ATTACK_SPEED) {
+        if (this.getSpeed() - enemy.getSpeed() >= DOUBLE_ATTACK_SPEED) {
             // Inflict damage to the enemy
             enemy.takeDamage(damage);
             // If the enemy is not alive
@@ -191,7 +198,7 @@ public abstract class Agent {
             }
         }
         // Else, if the enemy can do a double attack
-        else if (enemy.canCounterAttack(this) && enemy.getSpeed() - this.getSpeed() > DOUBLE_ATTACK_SPEED) {
+        else if (enemy.canCounterAttack(this) && enemy.getSpeed() - this.getSpeed() >= DOUBLE_ATTACK_SPEED) {
             // Inflict damage to this Agent
             this.takeDamage(enemyCounterDamage);
             // If this agent is not alive
