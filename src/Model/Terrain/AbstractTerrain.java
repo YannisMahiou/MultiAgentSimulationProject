@@ -4,7 +4,6 @@ import Model.Agent.Agent;
 import Model.Game.RandomSingleton;
 
 import java.util.List;
-import java.util.Random;
 
 public abstract class AbstractTerrain {
 
@@ -112,6 +111,10 @@ public abstract class AbstractTerrain {
 
     /**
      * Takes an agent and updates his coordinates
+     *
+     * @param agent the agent
+     * @param posX the X coordinate
+     * @param posY the Y coordinate
      */
     public void updateAgentCoordinates(Agent agent, int posX, int posY) {
         if(isFree(agent.getPosX(), agent.getPosY())){
@@ -120,14 +123,17 @@ public abstract class AbstractTerrain {
 
         agents[agent.getPosX()][agent.getPosY()] = null;
         agents[posX][posY] = agent;
+
+        agent.setPosX(posX);
+        agent.setPosY(posY);
     }
 
     /**
      * Checks if the posX and posY given aren't out of bounds from the Terrain
      *
-     * @param posX
-     * @param posY
-     * @return true if [posX
+     * @param posX the X coordinate
+     * @param posY the Y coordinate
+     * @return true if out of bounds
      */
     public boolean isOutOfBounds(int posX, int posY) {
         boolean isOut = false;
@@ -139,13 +145,13 @@ public abstract class AbstractTerrain {
     /**
      * Checks if the agent wants to move to the same [X][Y] coordinates
      *
-     * @param agent
-     * @param posX
-     * @param posY
-     * @return
+     * @param agent the agent
+     * @param posX the X coordinate
+     * @param posY the Y coordinate
+     * @return true if the coordinates correspond, false else
      */
     public boolean moveToSamePlace(Agent agent, int posX, int posY) {
-        return agent.getPosX() == posX || agent.getPosY() == posY;
+        return agent.getPosX() == posX && agent.getPosY() == posY;
     }
 
     public void removeAgent(Agent agent) {

@@ -2,6 +2,8 @@ import Model.Agent.*;
 import Model.Factory.AgentFactory;
 import Model.Factory.IFactory;
 import Model.Game.Game;
+import Model.Terrain.AbstractTerrain;
+import Model.Terrain.Terrain;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -85,7 +87,7 @@ public class ApplicationTest {
             Assert.assertEquals(FightStatus.DRAW, lancer.attack(bowman));
             Assert.assertEquals(FightStatus.WIN, knight.attack(bowman));
         }
-        catch (Exception e){
+        catch (IllegalStateException e){
             System.out.println("Caught Illegal State Exception, test failed");
             Assert.assertTrue(true);
         }
@@ -119,7 +121,7 @@ public class ApplicationTest {
             // 2 counter attacks
             Assert.assertEquals(5, bowman.getHp());
         }
-        catch (Exception e){
+        catch (IllegalStateException e){
             System.out.println("Caught Illegal State Exception, test failed");
             Assert.fail();
         }
@@ -136,24 +138,53 @@ public class ApplicationTest {
             System.out.println("Uncaught Illegal State Exception, test failed");
             Assert.fail();
         }
-        catch (Exception e){
+        catch (IllegalStateException e){
             System.out.println("Caught Illegal State Exception, test passed");
+            Assert.assertTrue(true);
         }
     }
 
     @Test
-    public void deadAgentAttackTest(){
+    public void testTerrain(){
         try{
             Agent axeMan = new AxeMan(25, 5, 10, 15, "");
-            Agent knight = new Knight(0, 5, 5, 15, "");
+            Agent knight = new Knight(25, 5, 5, 15, "");
+            AbstractTerrain terrain = new Terrain(20, 20);
 
-            knight.attack(axeMan);
+            terrain.agents[0][0] = axeMan;
+            terrain.agents[19][19] = knight;
 
+            // Test is free
+            Assert.assertFalse(terrain.isFree(0, 0));
+            Assert.assertFalse(terrain.isFree(19, 19));
+            Assert.assertTrue(terrain.isFree(1, 1));
+
+            // Test is out of bounds
+            Assert.assertTrue(terrain.isOutOfBounds(-1, 0));
+            Assert.assertTrue(terrain.isOutOfBounds(0, -1));
+            Assert.assertTrue(terrain.isOutOfBounds(20, 0));
+            Assert.assertTrue(terrain.isOutOfBounds(0, 20));
+
+            // Test move to same place
+            Assert.assertTrue(terrain.moveToSamePlace(axeMan, 0, 0));
+            Assert.assertFalse(terrain.moveToSamePlace(axeMan, 0, 1));
+            Assert.assertFalse(terrain.moveToSamePlace(axeMan, 1, 1));
+
+            terrain.updateAgentCoordinates(axeMan, 18,19);
+
+            Assert.assertEquals(18, axeMan.getPosX());
+            Assert.assertEquals(19, axeMan.getPosY());
+
+            terrain.agents[18][19] = null;
+
+            System.out.println("Test Illegal state");
+            terrain.updateAgentCoordinates(axeMan, 0, 0);
             System.out.println("Uncaught Illegal State Exception, test failed");
             Assert.fail();
         }
-        catch (Exception e){
+        catch (IllegalStateException e){
             System.out.println("Caught Illegal State Exception, test passed");
+            Assert.assertTrue(true);
         }
     }
 }

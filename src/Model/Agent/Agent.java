@@ -53,6 +53,9 @@ public abstract class Agent implements Serializable {
      * @return the status of the Fight : WIN if he killed an enemy, LOST if he died in battle, DRAW if both units are alive after a fight or NO_FIGHT if he couldn't fight
      */
     public FightStatus actionTurn(AbstractTerrain terrain, LinkedList<Agent> enemyTeam, LinkedList<Agent> alliedTeam) {
+        if(!this.isAlive()){
+            throw new IllegalStateException("Agent is not alive");
+        }
         // Initialise var
         List<Agent> closestEnemies = findEnemiesAtRange(terrain, enemyTeam);
         List<Agent> bestTargets;
@@ -157,9 +160,6 @@ public abstract class Agent implements Serializable {
     public FightStatus attack(Agent enemy) {
         if(!enemy.isAlive()){
             throw new IllegalStateException("Enemy is already dead");
-        }
-        if(!this.isAlive()){
-            throw  new IllegalStateException("Agent is already dead");
         }
 
         // Compute damage and enemy counter damage
@@ -331,8 +331,6 @@ public abstract class Agent implements Serializable {
         if (terrain.isFree(posX, posY)) {
             // Update his coordinates on the terrain and set his new position
             terrain.updateAgentCoordinates(this, posX, posY);
-            this.setPosX(posX);
-            this.setPosY(posY);
             return true;
         }
 

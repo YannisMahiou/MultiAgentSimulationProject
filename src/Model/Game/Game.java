@@ -1,7 +1,6 @@
 package Model.Game;
 
 import Model.Agent.Agent;
-import Model.Factory.AgentFactory;
 import Model.Serialization.DataManager;
 import Model.Serialization.FileDataManager;
 import Model.Strategy.ChaosAgentCreationStrategy;
@@ -24,6 +23,7 @@ public class Game {
     private static final int NB_ITE = 30;
     private static final int NB_EXPERIENCES = 30;
     private static final int NO_BONUS = 0;
+    private static final boolean DISPLAY = false;
 
     /**
      * Main function called when launching the MultiAgentSimulation
@@ -52,19 +52,15 @@ public class Game {
         for (int nbExperiences = 0; nbExperiences < NB_EXPERIENCES; ++nbExperiences) {
 
             // Agent Creation
-            if(blueTeam.size() == 0 || redTeam.size() == 0) {
-                try {
-                    createTeams(blueTeam, redTeam, choice, bonus);
+            try {
+                createTeams(blueTeam, redTeam, choice, bonus);
 
-                    System.out.println(nbExperiences + "Seria lization");
-                    // Serialize the teams
-                    dataManager.saveAgents("redTeam.ser", redTeam);
-                    dataManager.saveAgents("blueTeam.ser", blueTeam);
+                // Serialize the teams
+                dataManager.saveAgents("redTeam.ser", redTeam);
+                dataManager.saveAgents("blueTeam.ser", blueTeam);
 
-                }catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
             for (int turn = 0; turn < NB_ITE; ++turn) {
@@ -82,13 +78,12 @@ public class Game {
                     terrain.placeAgents(blueTeam);
                     terrain.placeAgents(redTeam);
                     //terrain.showTerrain();
-                    System.out.println("\n");
 
                     Iterator<Agent> blueTeamIterator = blueTeam.iterator();
                     Iterator<Agent> redTeamIterator = redTeam.iterator();
 
                     for (int i = 0; i < 100 && (blueTeamSize > 0 && redTeamSize > 0); ++i) {
-                        System.out.println(" \n Iteration " + i);
+                        // System.out.println(" \n Tour " + i);
                         while (blueTeamIterator.hasNext() && redTeamIterator.hasNext()) {
                             currentBlueTeamAgent = blueTeamIterator.next();
                             if (redTeamSize > 0 && currentBlueTeamAgent.isAlive()) {
@@ -113,10 +108,9 @@ public class Game {
                                         break;
                                 }
                             }
-                            //System.out.println("\n");
                         }
                         //terrain.showTerrain();
-                        System.out.println();
+                        //System.out.println();
                         blueTeamIterator = blueTeam.iterator();
                         redTeamIterator = redTeam.iterator();
 
@@ -144,17 +138,17 @@ public class Game {
             }
 
             experiences[nbExperiences] = (float) nbVictoryRed / nbTurns;
-            blueTeam = new LinkedList<Agent>();
-            redTeam = new LinkedList<Agent>();
+            blueTeam = new LinkedList<>();
+            redTeam = new LinkedList<>();
         }
 
         System.out.println("Statistics part");
         for (int i = 0; i < NB_EXPERIENCES; ++i) {
-            System.out.println("EXPERIENCE " + i + " : RED won " + experiences[i] + " % games and BLUE won " + (1 - experiences[i]) + " % games");
+            System.out.println("EXPERIENCE " + i + " : RED won " + experiences[i] * 100 + "% games and BLUE won " + (100 - experiences[i]) + "% games");
             cumulate += experiences[i];
         }
 
-        System.out.println("\n MEAN of the Experiences : " + cumulate / NB_EXPERIENCES * 100 + "% won by RED and " + (100 - cumulate / NB_EXPERIENCES * 100) + " won by BLUE");
+        System.out.println("\n MEAN of the Experiences : " + cumulate / NB_EXPERIENCES * 100 + "% won by RED and " + (100 - cumulate / NB_EXPERIENCES * 100) + "% won by BLUE");
     }
 
     private static void createTeams(List<Agent> blueTeam, List<Agent> redTeam, int choice, int bonus) throws Exception {
