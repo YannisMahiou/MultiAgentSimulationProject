@@ -34,9 +34,7 @@ public class Game {
 
 
         int nbTurns = 0;
-        Statistics statistics = new Statistics();
-        float cumulate = 0;
-        float[] experiences = new float[NB_EXPERIENCES];
+        Statistics statistics = new Statistics(NB_ITE, NB_EXPERIENCES);
         int choice = -1, bonus = 0;
         LinkedList<Agent> blueTeam = new LinkedList<>();
         LinkedList<Agent> redTeam = new LinkedList<>();
@@ -136,7 +134,6 @@ public class Game {
                         }
                     }
 
-
                     nbTurns++;
 
                     // Deserialize the teams
@@ -155,19 +152,11 @@ public class Game {
                 }
             }
 
-            experiences[nbExperiences] = (float) nbVictoryRed / nbTurns;
-            statistics.computeStats(redTeam, blueTeam);
+            statistics.addsToMeanArray(nbVictoryRed, nbExperiences);
             blueTeam = new LinkedList<>();
             redTeam = new LinkedList<>();
         }
-
-        System.out.println("Statistics part");
-        for (int i = 0; i < NB_EXPERIENCES; ++i) {
-            System.out.println("EXPERIENCE " + i + " : RED won " + experiences[i] * 100 + "% games and BLUE won " + (100 - experiences[i] * 100) + "% games");
-            cumulate += experiences[i];
-        }
-
-        System.out.println("\n MEAN of the Experiences : " + cumulate / NB_EXPERIENCES * 100 + "% won by RED and " + (100 - cumulate / NB_EXPERIENCES * 100) + "% won by BLUE");
+        statistics.computeMean();
         statistics.showTerrainStats();
     }
 

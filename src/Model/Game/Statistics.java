@@ -10,10 +10,16 @@ public class Statistics {
     private static int NB_AGENTS = 20;
     private int[][] statsAgent;
     private double cumulAgent;
+    private float[] experiences;
+    int nbIte;
+    int nbExperiences;
 
-    public Statistics(){
+    public Statistics(int nbIte, int nbExperiences){
         statsAgent = new int[NB_AGENTS][NB_AGENTS];
         cumulAgent = 0;
+        this.nbIte = nbIte;
+        this.nbExperiences = nbExperiences;
+        experiences = new float[nbExperiences];
     }
 
     public void computeStats(LinkedList<Agent> redTeam, LinkedList<Agent> blueTeam) {
@@ -64,5 +70,21 @@ public class Statistics {
         }
 
         System.out.println("Number of positions counted : " + cumulAgent);
+    }
+
+    public void computeMean() {
+        float cumulate = 0;
+
+        System.out.println("Statistics part");
+        for (int i = 0; i < nbExperiences; ++i) {
+            System.out.println("EXPERIENCE " + i + " : RED won " + experiences[i] * 100  + "% games and BLUE won " + (1 - experiences[i]) * 100 + "% games");
+            cumulate += experiences[i];
+        }
+
+        System.out.println("\n MEAN of the Experiences : " + (cumulate / nbExperiences) * 100 + "% won by RED and " + (100 - cumulate / nbExperiences * 100) + "% won by BLUE");
+    }
+
+    public void addsToMeanArray(int nbVictoryRed, int it) {
+        experiences[it] = (float) nbVictoryRed / nbIte;
     }
 }
