@@ -12,6 +12,7 @@ public abstract class Agent implements Serializable {
     protected static double DISADVANTAGE = 0.8;
     protected static int MIN_DAMAGE = 1;
     protected static int DOUBLE_ATTACK_SPEED = 5;
+    protected static int MAX_LOCKED_ITER = 5;
     private int hp;
     private int damageReduction;
     private int speed;
@@ -80,8 +81,10 @@ public abstract class Agent implements Serializable {
 
             // Find the best targets
             bestTargets = findBestTargets(closestEnemies, terrain);
+            int unlock = 0;
             // Do - While (Guarantee a move inside of the terrain bounds)
             do {
+                unlock++;
                 // Chose randomly the targets to focus
                 rand = RandomSingleton.getInstance().nextInt(bestTargets.size());
                 focused = bestTargets.get(rand);
@@ -125,7 +128,7 @@ public abstract class Agent implements Serializable {
                     default:
                         throw new IllegalStateException("Unexpected value: " + getDirection(focused));
                 }
-            } while (terrain.isOutOfBounds(newPosX, newPosY));
+            } while (terrain.isOutOfBounds(newPosX, newPosY) && unlock < MAX_LOCKED_ITER);
         }
 
         // If the agent could move (he can "move" to the same place)
@@ -324,16 +327,18 @@ public abstract class Agent implements Serializable {
      * @return true if the Agent moved or "moved" to the same place, false if he couldn't move
      */
     protected boolean moveTo(AbstractTerrain terrain, int posX, int posY) {
-        // Check if the agent is moving to the same place
-        if (terrain.moveToSamePlace(this, posX, posY)) {
-            return true;
-        }
+        if (!terrain.isOutOfBounds(posX, posY)) {
+            // Check if the agent is moving to the same place
+            if (terrain.moveToSamePlace(this, posX, posY)) {
+                return true;
+            }
 
-        // If the agent is going to move to a free positon on the terrain
-        if (terrain.isFree(posX, posY)) {
-            // Update his coordinates on the terrain and set his new position
-            terrain.updateAgentCoordinates(this, posX, posY);
-            return true;
+            // If the agent is going to move to a free positon on the terrain
+            if (terrain.isFree(posX, posY)) {
+                // Update his coordinates on the terrain and set his new position
+                terrain.updateAgentCoordinates(this, posX, posY);
+                return true;
+            }
         }
 
         // The agent did not move
