@@ -9,12 +9,24 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Creates team in a chaotic way
+ */
 public class ChaosAgentCreationStrategy implements IAgentCreationStrategy {
 
     // Bonus maximal de 5 (6 exclu)
     private static final int MAX_BONUS = 6;
     private static final int SWITCH = 1;
 
+    /**
+     * Creates a Team of agent
+     * @param team the team to fill
+     * @param size the size of the team
+     * @param color the color of the team
+     * @param bonus the bonus given to the team
+     * @return the created team
+     * @throws Exception if any problems occurs in the creation
+     */
     @Override
     public List<Agent> createTeam(List<Agent> team, int size, String color, int bonus) throws Exception {
         AgentFactory factory = new AgentFactory();

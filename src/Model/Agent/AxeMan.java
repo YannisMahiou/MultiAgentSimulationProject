@@ -5,8 +5,20 @@ import Model.Terrain.AbstractTerrain;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Melee Agent with an axe
+ */
 public class AxeMan extends MeleeAgent {
 
+    /**
+     * Axeman constructor
+     *
+     * @param hp health points
+     * @param damageReduction armor
+     * @param speed speed
+     * @param strength resistance
+     * @param color blue or red
+     */
     public AxeMan(int hp, int damageReduction, int speed, int strength, String color) {
         super(hp, damageReduction, speed, strength, 1, color);
     }

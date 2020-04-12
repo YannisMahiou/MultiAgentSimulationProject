@@ -5,8 +5,20 @@ import Model.Terrain.AbstractTerrain;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Melee Agent with a sword
+ */
 public class Knight extends MeleeAgent {
 
+    /**
+     * Knight constructor
+     *
+     * @param hp health points
+     * @param damageReduction armor
+     * @param speed speed
+     * @param strength resistance
+     * @param color blue or red
+     */
     public Knight(int hp, int damageReduction, int speed, int strength, String color) {
         super(hp, damageReduction, speed, strength, 1, color);
     }

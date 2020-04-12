@@ -5,6 +5,9 @@ import Model.Game.RandomSingleton;
 
 import java.util.List;
 
+/**
+ * Terrain containing agents and primitives to manipulate agents
+ */
 public abstract class AbstractTerrain {
 
     private static int NB_AGENTS = 20;
@@ -165,6 +168,11 @@ public abstract class AbstractTerrain {
         return agent.getPosX() == posX && agent.getPosY() == posY;
     }
 
+    /**
+     * Removes an agent from the terrain
+     *
+     * @param agent the agent to remove
+     */
     public void removeAgent(Agent agent) {
         agents[agent.getPosX()][agent.getPosY()] = null;
     }

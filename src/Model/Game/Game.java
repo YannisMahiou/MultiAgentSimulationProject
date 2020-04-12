@@ -15,6 +15,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Game loop used to run the SMA
+ */
 public class Game {
 
     private static final String ANSI_RED = "\u001B[31m";
@@ -32,8 +35,6 @@ public class Game {
      */
     public static void main(String[] args) {
 
-
-        int nbTurns = 0;
         Statistics statistics = new Statistics(NB_ITE, NB_EXPERIENCES);
         int choice = -1, bonus = 0;
         LinkedList<Agent> blueTeam = new LinkedList<>();
@@ -49,7 +50,6 @@ public class Game {
         for (int nbExperiences = 0; nbExperiences < NB_EXPERIENCES; ++nbExperiences) {
 
             int nbVictoryRed = 0;
-            int nbVictoryBlue = 0;
 
             // Agent Creation
             try {
@@ -124,13 +124,10 @@ public class Game {
                     } else {
                         if (redTeamSize == 0) {
                             //System.out.println("Blue team wins");
-                            nbVictoryBlue++;
                         } else {
                             throw new Exception();
                         }
                     }
-
-                    nbTurns++;
 
                     // Deserialize the teams
                     redTeam = dataManager.loadAgents("redTeam.ser");
@@ -164,7 +161,7 @@ public class Game {
      * @param redTeam the Red team
      * @param choice the user simulation mode choice
      * @param bonus value of the bonus
-     * @throws Exception
+     * @throws Exception if any errors in creation occurs
      */
     private static void createTeams(List<Agent> blueTeam, List<Agent> redTeam, int choice, int bonus) throws Exception {
         IAgentCreationStrategy agentCreationStrategy;

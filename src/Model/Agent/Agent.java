@@ -6,6 +6,9 @@ import Model.Terrain.AbstractTerrain;
 import java.io.Serializable;
 import java.util.*;
 
+/**
+ * Agent class used to represent agents in SMA
+ */
 public abstract class Agent implements Serializable {
 
     protected static double ADVANTAGE = 1.2;
@@ -29,7 +32,7 @@ public abstract class Agent implements Serializable {
      * @param damageReduction armor
      * @param speed           speed of movement
      * @param strength        strength
-     * @param range
+     * @param range           range of fighting
      * @param color           color of the team
      */
     public Agent(int hp, int damageReduction, int speed, int strength, int range, String color) {
@@ -40,8 +43,6 @@ public abstract class Agent implements Serializable {
         setRange(range);
         setColor(color);
     }
-
-    // Methods from the interface IAgent
 
     /**
      * Turn of an agent : Find a place to move to attack an enemy

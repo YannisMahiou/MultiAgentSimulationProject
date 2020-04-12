@@ -1,5 +1,8 @@
 package Model.Agent;
 
+/**
+ * Directions of moves used by moves algorithms
+ */
 public enum Direction {
     TOP,
     BOT,

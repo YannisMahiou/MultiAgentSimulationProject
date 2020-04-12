@@ -6,6 +6,9 @@ import Model.Terrain.AbstractTerrain;
 
 import java.util.LinkedList;
 
+/**
+ * Statistics class used to propose statistics on the SMA
+ */
 public class Statistics {
 
     private static int NB_AGENTS = 20;
@@ -19,6 +22,11 @@ public class Statistics {
     private int nbNoFights;
     private int nbDraws;
 
+    /**
+     * Statistics module constructor
+     * @param nbIte number of iterations chosen
+     * @param nbExperiences number of experiences chosen
+     */
     public Statistics(int nbIte, int nbExperiences){
         statsAgent = new int[NB_AGENTS][NB_AGENTS];
         cumulAgent = 0;
@@ -145,7 +153,6 @@ public class Statistics {
         System.out.println("Number of Wins : " + nbWins + " represents " + String.format("%.2f", nbWins / nbFight * 100) + "% of total fights");
         System.out.println("Number of Loss : " + nbLoss+ " represents " + String.format("%.2f", nbLoss / nbFight * 100) + "% of total fights");
         System.out.println("Number of Draws : " + nbDraws + " represents " + String.format("%.2f", nbDraws / nbFight * 100) + "% of total fights");
-
         System.out.println("Number of action without any fight : " + nbNoFights + " represents " + String.format("%.2f", nbNoFights / nbAction * 100) + "% of total actions");
     }
 }

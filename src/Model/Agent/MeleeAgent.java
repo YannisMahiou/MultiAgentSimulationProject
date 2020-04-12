@@ -7,10 +7,20 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by yannis on 14/01/20.
+ * Melee Agent : Axe, Sword, Lance
  */
 public abstract class MeleeAgent extends Agent {
 
+    /**
+     * MeleeAgent constructor
+     *
+     * @param hp              health points
+     * @param damageReduction armor
+     * @param speed           speed of movement
+     * @param strength        strength
+     * @param range           range of the agent
+     * @param color           color of the team
+     */
     public MeleeAgent(int hp, int damageReduction, int speed, int strength, int range, String color) {
         super(hp, damageReduction, speed, strength, range, color);
     }

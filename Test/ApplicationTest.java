@@ -7,10 +7,14 @@ import Model.Terrain.Terrain;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * Test class used in TDD
+ */
 public class ApplicationTest {
 
-    IFactory factory = new AgentFactory();
-
+    /**
+     * Tests the attack function
+     */
     @Test
     public void triangleDamageTest()
     {
@@ -57,6 +61,9 @@ public class ApplicationTest {
         }
     }
 
+    /**
+     * Test agent counter attacks
+     */
     @Test
     public void counterAttackTest(){
         try{
@@ -93,6 +100,9 @@ public class ApplicationTest {
         }
     }
 
+    /**
+     * Test the double attack function
+     */
     @Test
     public void doubleAttackTest(){
         try{
@@ -127,6 +137,9 @@ public class ApplicationTest {
         }
     }
 
+    /**
+     * Test of attacking a dead Agent
+     */
     @Test
     public void attackDeadAgentTest(){
         try{
@@ -144,6 +157,9 @@ public class ApplicationTest {
         }
     }
 
+    /**
+     * Test on the terrain
+     */
     @Test
     public void testTerrain(){
         try{
