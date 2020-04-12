@@ -67,7 +67,18 @@ public abstract class AbstractTerrain {
     }
 
     /**
-     * Create the agents on the terrain for the incoming simulation
+     * Replace the agents on the terrain for the incoming simulation
+     *
+     * @param team Agents team created
+     */
+    public void replaceAgents(List<Agent> team) {
+        for (Agent agent : team) {
+            agents[agent.getPosX()][agent.getPosY()] = agent;
+        }
+    }
+
+    /**
+     * Place the agents on the terrain for the incoming simulation
      *
      * @param team Agents team created
      */

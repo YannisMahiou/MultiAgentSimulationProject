@@ -41,7 +41,7 @@ public class Game {
         int choice = -1, bonus = 0;
         LinkedList<Agent> blueTeam = new LinkedList<>();
         LinkedList<Agent> redTeam = new LinkedList<>();
-
+        AbstractTerrain terrain = null;
 
         // Serialization
         DataManager dataManager = new FileDataManager();
@@ -54,6 +54,11 @@ public class Game {
             // Agent Creation
             try {
                 createTeams(blueTeam, redTeam, choice, bonus);
+
+                terrain = new Terrain(20, 20);
+
+                terrain.placeAgents(blueTeam);
+                terrain.placeAgents(redTeam);
 
                 // Serialize the teams
                 dataManager.saveAgents("redTeam.ser", redTeam);
@@ -69,14 +74,12 @@ public class Game {
                 try {
 
                     // Initialisation of variables
-                    AbstractTerrain terrain = new Terrain(20, 20);
 
                     int blueTeamSize = TEAM_SIZE, redTeamSize = TEAM_SIZE;
                     Agent currentBlueTeamAgent, currentRedTeamAgent;
 
                     // We place the teams on the board
-                    terrain.placeAgents(blueTeam);
-                    terrain.placeAgents(redTeam);
+
                     //terrain.showTerrain();
 
                     Iterator<Agent> blueTeamIterator = blueTeam.iterator();
@@ -130,6 +133,11 @@ public class Game {
                     // Deserialize the teams
                     redTeam = dataManager.loadAgents("redTeam.ser");
                     blueTeam = dataManager.loadAgents("blueTeam.ser");
+
+                    terrain = new Terrain(20, 20);
+
+                    terrain.replaceAgents(blueTeam);
+                    terrain.replaceAgents(redTeam);
 
                 } catch (Exception e) {
                     System.err.println("[Exception]");

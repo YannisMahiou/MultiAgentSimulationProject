@@ -51,8 +51,8 @@ public class Statistics {
         }
 
         System.out.println();
-        
-        System.out.println("Pourcentage of agents on said position at the end of each round (1 turn for each team, 2 digits)");
+
+        System.out.println("Percentage of agents on said position at the end of each round (1 turn for each team, 2 digits)");
         for (int x = 0; x < NB_AGENTS; x++) {
             for (int y = 0; y < NB_AGENTS; y++) {
                 System.out.print( String.format("%.2f", statsAgent[x][y] / cumulAgent * 100.0f) + " ");
