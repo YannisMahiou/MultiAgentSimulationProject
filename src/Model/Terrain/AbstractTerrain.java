@@ -7,9 +7,9 @@ import java.util.List;
 
 public abstract class AbstractTerrain {
 
-    private static int NBAGENTS = 20;
+    private static int NB_AGENTS = 20;
     private static int SIZEY = 5;
-    public Agent[][] agents = new Agent[NBAGENTS][NBAGENTS];
+    public Agent[][] agents = new Agent[NB_AGENTS][NB_AGENTS];
     private int sizeX;
     private int sizeY;
 
@@ -44,8 +44,8 @@ public abstract class AbstractTerrain {
      * Create an empty terrain for the simulation
      */
     public void createTerrain() {
-        for (int j = 0; j < NBAGENTS; ++j) {
-            for (int i = 0; i < NBAGENTS; ++i) {
+        for (int j = 0; j < NB_AGENTS; ++j) {
+            for (int i = 0; i < NB_AGENTS; ++i) {
                 System.out.print("*");
             }
             System.out.print("\n");
@@ -84,8 +84,8 @@ public abstract class AbstractTerrain {
             do {
 
                 //Generates 2 random numbers
-                randX = RandomSingleton.getInstance().nextInt(NBAGENTS);
-                randY = RandomSingleton.getInstance().nextInt(NBAGENTS);
+                randX = RandomSingleton.getInstance().nextInt(NB_AGENTS);
+                randY = RandomSingleton.getInstance().nextInt(NB_AGENTS);
             } while (!isFree(randX, randY));
 
             // Place an Agent
@@ -99,8 +99,8 @@ public abstract class AbstractTerrain {
      * Function called to show the terrain with the agents
      */
     public void showTerrain() {
-        for (int x = 0; x < NBAGENTS; x++) {
-            for (int y = 0; y < NBAGENTS; y++) {
+        for (int x = 0; x < NB_AGENTS; x++) {
+            for (int y = 0; y < NB_AGENTS; y++) {
                 if (isFree(x, y))
                     System.out.print("* ");
                 else System.out.print(agents[x][y].toString() + " ");
@@ -137,7 +137,7 @@ public abstract class AbstractTerrain {
      */
     public boolean isOutOfBounds(int posX, int posY) {
         boolean isOut = false;
-        if (posX < 0 || posY < 0 || posX >= NBAGENTS || posY >= NBAGENTS)
+        if (posX < 0 || posY < 0 || posX >= NB_AGENTS || posY >= NB_AGENTS)
             isOut = true;
         return isOut;
     }

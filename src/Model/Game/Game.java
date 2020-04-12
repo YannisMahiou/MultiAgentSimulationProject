@@ -82,7 +82,7 @@ public class Game {
                     Iterator<Agent> blueTeamIterator = blueTeam.iterator();
                     Iterator<Agent> redTeamIterator = redTeam.iterator();
 
-                    for (int i = 0; i < 100 && (blueTeamSize > 0 && redTeamSize > 0); ++i) {
+                    for (int i = 0; i < 100 && blueTeamSize > 0 && redTeamSize > 0; ++i) {
                         // System.out.println(" \n Tour " + i);
                         while (blueTeamIterator.hasNext() && redTeamIterator.hasNext()) {
                             currentBlueTeamAgent = blueTeamIterator.next();
@@ -111,6 +111,7 @@ public class Game {
                         }
                         //terrain.showTerrain();
                         //System.out.println();
+                        statistics.computeTerrainStats(terrain);
                         blueTeamIterator = blueTeam.iterator();
                         redTeamIterator = redTeam.iterator();
 
@@ -145,11 +146,12 @@ public class Game {
 
         System.out.println("Statistics part");
         for (int i = 0; i < NB_EXPERIENCES; ++i) {
-            System.out.println("EXPERIENCE " + i + " : RED won " + experiences[i] * 100 + "% games and BLUE won " + (100 - experiences[i]) + "% games");
+            System.out.println("EXPERIENCE " + i + " : RED won " + experiences[i] * 100 + "% games and BLUE won " + (100 - experiences[i] * 100) + "% games");
             cumulate += experiences[i];
         }
 
         System.out.println("\n MEAN of the Experiences : " + cumulate / NB_EXPERIENCES * 100 + "% won by RED and " + (100 - cumulate / NB_EXPERIENCES * 100) + "% won by BLUE");
+        statistics.showTerrainStats();
     }
 
     private static void createTeams(List<Agent> blueTeam, List<Agent> redTeam, int choice, int bonus) throws Exception {

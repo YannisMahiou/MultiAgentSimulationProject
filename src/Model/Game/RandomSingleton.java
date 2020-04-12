@@ -6,7 +6,7 @@ public class RandomSingleton {
 
     private static RandomSingleton instance;
     private Random generator;
-    private static long SEED = 0;
+    private static final long SEED = 151515L;
 
     private RandomSingleton(){
         generator = new Random();
