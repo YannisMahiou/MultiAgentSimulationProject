@@ -70,6 +70,8 @@ public abstract class Agent implements Serializable {
             // Chose randomly the targets to focus
             rand = RandomSingleton.getInstance().nextInt(bestTargets.size());
             focused = bestTargets.get(rand);
+            newPosX = this.getPosX();
+            newPosY = this.getPosY();
         }
         // Else if there no enemy directly at range
         else {

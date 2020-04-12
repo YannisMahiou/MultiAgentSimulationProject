@@ -46,6 +46,9 @@ public class Statistics {
                 else if (statsAgent[x][y] >= 10){
                     System.out.print(statsAgent[x][y] + "    ");
                 }
+                else if (statsAgent[x][y] >= 0){
+                    System.out.print(statsAgent[x][y] + "     ");
+                }
             }
             System.out.println();
         }

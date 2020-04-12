@@ -21,7 +21,6 @@ public class RandomSingleton {
         if(instance == null)
         {
             instance = new RandomSingleton();
-            instance.generator.setSeed(SEED);
         }
         return instance;
     }

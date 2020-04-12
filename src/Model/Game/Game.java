@@ -20,8 +20,8 @@ public class Game {
     private static final String ANSI_RED = "\u001B[31m";
     private static final String ANSI_BLUE = "\u001B[34m";
     private static final int TEAM_SIZE = 20;
-    private static final int NB_ITE = 30;
-    private static final int NB_EXPERIENCES = 30;
+    private static final int NB_ITE = 10;
+    private static final int NB_EXPERIENCES = 10;
     private static final int NO_BONUS = 0;
     private static final boolean DISPLAY = false;
 
@@ -32,8 +32,7 @@ public class Game {
      */
     public static void main(String[] args) {
 
-        int nbVictoryRed = 0;
-        int nbVictoryBlue = 0;
+
         int nbTurns = 0;
         Statistics statistics = new Statistics();
         float cumulate = 0;
@@ -50,6 +49,9 @@ public class Game {
         bonus = fillBonus(choice);
 
         for (int nbExperiences = 0; nbExperiences < NB_EXPERIENCES; ++nbExperiences) {
+
+            int nbVictoryRed = 0;
+            int nbVictoryBlue = 0;
 
             // Agent Creation
             try {
@@ -85,9 +87,10 @@ public class Game {
                     Iterator<Agent> blueTeamIterator = blueTeam.iterator();
                     Iterator<Agent> redTeamIterator = redTeam.iterator();
 
-                    for (int i = 0; i < 100 && blueTeamSize > 0 && redTeamSize > 0; ++i) {
+                    while (blueTeamSize > 0 && redTeamSize > 0) {
                         // System.out.println(" \n Tour " + i);
                         while (blueTeamIterator.hasNext() && redTeamIterator.hasNext()) {
+
                             currentBlueTeamAgent = blueTeamIterator.next();
                             if (redTeamSize > 0 && currentBlueTeamAgent.isAlive()) {
                                 switch (currentBlueTeamAgent.actionTurn(terrain, redTeam, blueTeam)) {
@@ -124,9 +127,15 @@ public class Game {
                         System.out.println("Victoire de l'équipe Rouge");
                         nbVictoryRed++;
                     } else {
-                        System.out.println("Victoire de l'équipe Bleue");
-                        nbVictoryBlue++;
+                        if(redTeamSize == 0) {
+                            System.out.println("Victoire de l'équipe Bleue");
+                            nbVictoryBlue++;
+                        }
+                        else {
+                            throw new Exception();
+                        }
                     }
+
 
                     nbTurns++;
 
