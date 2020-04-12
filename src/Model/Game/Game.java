@@ -35,7 +35,7 @@ public class Game {
         int nbVictoryRed = 0;
         int nbVictoryBlue = 0;
         int nbTurns = 0;
-        float meanVictory;
+        Statistics statistics = new Statistics();
         float cumulate = 0;
         float[] experiences = new float[NB_EXPERIENCES];
         int choice = -1, bonus = 0;
@@ -138,6 +138,7 @@ public class Game {
             }
 
             experiences[nbExperiences] = (float) nbVictoryRed / nbTurns;
+            statistics.computeStats(redTeam, blueTeam);
             blueTeam = new LinkedList<>();
             redTeam = new LinkedList<>();
         }
