@@ -74,11 +74,8 @@ public class Game {
                 try {
 
                     // Initialisation of variables
-
                     int blueTeamSize = TEAM_SIZE, redTeamSize = TEAM_SIZE;
                     Agent currentBlueTeamAgent, currentRedTeamAgent;
-
-                    // We place the teams on the board
 
                     //terrain.showTerrain();
 
@@ -91,7 +88,7 @@ public class Game {
 
                             currentBlueTeamAgent = blueTeamIterator.next();
                             if (redTeamSize > 0 && currentBlueTeamAgent.isAlive()) {
-                                switch (currentBlueTeamAgent.actionTurn(terrain, redTeam, blueTeam)) {
+                                switch (statistics.countFightStatuses(currentBlueTeamAgent.actionTurn(terrain, redTeam, blueTeam))) {
                                     case LOST:
                                         blueTeamSize -= 1;
                                         break;
@@ -103,7 +100,7 @@ public class Game {
 
                             currentRedTeamAgent = redTeamIterator.next();
                             if (blueTeamSize > 0 && currentRedTeamAgent.isAlive()) {
-                                switch (currentRedTeamAgent.actionTurn(terrain, blueTeam, redTeam)) {
+                                switch (statistics.countFightStatuses(currentRedTeamAgent.actionTurn(terrain, blueTeam, redTeam))) {
                                     case LOST:
                                         redTeamSize -= 1;
                                         break;
@@ -122,14 +119,13 @@ public class Game {
                     }
 
                     if (blueTeamSize == 0) {
-                        System.out.println("Victoire de l'équipe Rouge");
+                        //System.out.println("Red team wins");
                         nbVictoryRed++;
                     } else {
-                        if(redTeamSize == 0) {
-                            System.out.println("Victoire de l'équipe Bleue");
+                        if (redTeamSize == 0) {
+                            //System.out.println("Blue team wins");
                             nbVictoryBlue++;
-                        }
-                        else {
+                        } else {
                             throw new Exception();
                         }
                     }
@@ -158,6 +154,7 @@ public class Game {
         }
         statistics.computeMean();
         statistics.showTerrainStats();
+        statistics.displayFightStatuses();
     }
 
     private static void createTeams(List<Agent> blueTeam, List<Agent> redTeam, int choice, int bonus) throws Exception {
@@ -194,12 +191,12 @@ public class Game {
     private static int startup() {
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Bienvenue dans la simulation colisée ! Veuillez choisir le type de simulation parmis la liste ci-dessous :");
-        System.out.println("Simulation type 1 : Mode chaos, statistiques des unités randomisées (malus ou bonus allant jusqu'à 5) et composition totalement aléatoire");
-        System.out.println("Simulation type 2 : Mode avantage, statistiques des unités de l'équipe bleue boostées");
-        System.out.println("Simulation type 3 : Compositions aléatoires");
-        System.out.println("Simulation standard : Mode équilibré");
-        System.out.print("Votre choix : ");
+        System.out.println("Welcome to the colosseum simulation ! Please choose the wanted type of simulation in the list below :");
+        System.out.println("Simulation type 1 : Chaos mode, randomized agent stats (penalty or bonus up to 5 points for each stat) and randomized team composition");
+        System.out.println("Simulation type 2 : Advantage mode, you can give a penalty or a bonus to the blue team's agent statistics");
+        System.out.println("Simulation type 3 : Randomized team composition mode");
+        System.out.println("Simulation type Standard (press any other key than 1, 2 or 3) : Every units have the same stats");
+        System.out.print("Your choice : ");
 
         return scanner.nextInt();
     }
@@ -209,7 +206,7 @@ public class Game {
         if (choice == 2) {
             Scanner scanner = new Scanner(System.in);
 
-            System.out.print("Saisir la valeur du bonus : ");
+            System.out.print("Fill the value of the penalty / bonus : ");
 
             return scanner.nextInt();
         }
