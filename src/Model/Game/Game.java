@@ -20,8 +20,8 @@ public class Game {
     private static final String ANSI_RED = "\u001B[31m";
     private static final String ANSI_BLUE = "\u001B[34m";
     private static final int TEAM_SIZE = 20;
-    private static final int NB_ITE = 10;
-    private static final int NB_EXPERIENCES = 10;
+    private static final int NB_ITE = 100;
+    private static final int NB_EXPERIENCES = 100;
     private static final int NO_BONUS = 0;
     private static final boolean DISPLAY = false;
 
@@ -148,15 +148,24 @@ public class Game {
                 }
             }
 
-            statistics.addsToMeanArray(nbVictoryRed, nbExperiences);
+            statistics.addToMeanArray(nbVictoryRed, nbExperiences);
             blueTeam = new LinkedList<>();
             redTeam = new LinkedList<>();
         }
         statistics.computeMean();
-        statistics.showTerrainStats();
+        statistics.displayTerrainStats();
         statistics.displayFightStatuses();
     }
 
+    /**
+     * Function used to create the two teams of agent for the simulations
+     *
+     * @param blueTeam the Blue team (that engages first and gets the bonus if there's one)
+     * @param redTeam the Red team
+     * @param choice the user simulation mode choice
+     * @param bonus value of the bonus
+     * @throws Exception
+     */
     private static void createTeams(List<Agent> blueTeam, List<Agent> redTeam, int choice, int bonus) throws Exception {
         IAgentCreationStrategy agentCreationStrategy;
 
@@ -188,6 +197,11 @@ public class Game {
         }
     }
 
+    /**
+     * Startup of the app, shows the different simulations available and ask the user to choose the one he wants
+     *
+     * @return int : The user choice
+     */
     private static int startup() {
         Scanner scanner = new Scanner(System.in);
 
@@ -201,6 +215,12 @@ public class Game {
         return scanner.nextInt();
     }
 
+    /**
+     * Ask the user to fill the bonus or penalty wanted for the blue team if he chose the the Advantage mode)
+     *
+     * @param choice int : The user choice
+     * @return int : The bonus or penalty
+     */
     private static int fillBonus(int choice) {
 
         if (choice == 2) {

@@ -6,7 +6,7 @@ public class RandomSingleton {
 
     private static RandomSingleton instance;
     private Random generator;
-    private static final long SEED = 3;
+    private static final long SEED = 78000L;
 
     private RandomSingleton(){
         generator = new Random();
@@ -21,6 +21,9 @@ public class RandomSingleton {
         if(instance == null)
         {
             instance = new RandomSingleton();
+            if(SEED > 0){
+                instance.generator.setSeed(SEED);
+            }
         }
         return instance;
     }

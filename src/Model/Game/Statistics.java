@@ -31,9 +31,11 @@ public class Statistics {
         experiences = new float[nbExperiences];
     }
 
-    public void computeStats(LinkedList<Agent> redTeam, LinkedList<Agent> blueTeam) {
-    }
-
+    /**
+     * Counts the number of times on each position where an agent was on the terrain at the end of a turn
+     *
+     * @param terrain : The terrain
+     */
     public void computeTerrainStats(AbstractTerrain terrain) {
         for (int x = 0; x < NB_AGENTS; x++) {
             for (int y = 0; y < NB_AGENTS; y++) {
@@ -45,7 +47,10 @@ public class Statistics {
         }
     }
 
-    public void showTerrainStats(){
+    /**
+     * Displays the statistics of the terrain positions
+     */
+    public void displayTerrainStats(){
         System.out.println("Number of agents on said position at the end of each round (1 turn for each team)");
         for (int x = 0; x < NB_AGENTS; x++) {
             for (int y = 0; y < NB_AGENTS; y++) {
@@ -81,6 +86,9 @@ public class Statistics {
         System.out.println("Number of positions counted : " + cumulAgent);
     }
 
+    /**
+     * Computes the mean of wins and loses of each team
+     */
     public void computeMean() {
         float cumulate = 0;
 
@@ -93,10 +101,21 @@ public class Statistics {
         System.out.println("MEAN of the Experiences : " + String.format("%.2f", (cumulate / nbExperiences) * 100) + "% won by RED and " + String.format("%.2f", (100 - cumulate / nbExperiences * 100)) + "% won by BLUE");
     }
 
-    public void addsToMeanArray(int nbVictoryRed, int it) {
+    /**
+     * Store the percentage of wins of the red team at the end of each simulation
+     *
+     * @param nbVictoryRed  the number of wins
+     * @param it            the current simulation number
+     */
+    public void addToMeanArray(int nbVictoryRed, int it) {
         experiences[it] = (float) nbVictoryRed / nbIte;
     }
 
+    /**
+     * Count the number of wins, draws and lost fights at the end of each action as well as the number of actions with no fights
+     * @param fightStatus the status of the fight
+     * @return the status of the fight
+     */
     public FightStatus countFightStatuses(FightStatus fightStatus){
         switch (fightStatus){
             case WIN:
@@ -115,6 +134,9 @@ public class Statistics {
         return fightStatus;
     }
 
+    /**
+     * Displays different statistics of the recorded turns at the end of the whole simulation
+     */
     public void displayFightStatuses(){
         double nbFight = nbWins + nbDraws + nbLoss;
         double nbAction = nbFight + nbNoFights;
